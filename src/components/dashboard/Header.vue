@@ -1,50 +1,65 @@
 <template>
   <header :class="{ expanded: !isSidebarVisible }">
-      <button class="toggle-btn" @click="toggleSidebar">☰</button>
-      <div class="header-content">
-          <div class="search-bar-container">
-              <input type="text" v-model="search" placeholder="Search" class="search-bar" />
-          </div>
-          <div class="role-selection">
-              <button @click="selectRole('admin')" :class="{ active: currentRole === 'admin' }">PH Operator</button>
-              <button @click="selectRole('user')" :class="{ active: currentRole === 'user' }">WH Operator</button>
-          </div>
+    <button class="toggle-btn" @click="toggleSidebar">☰</button>
+    <div class="header-content">
+      <div class="search-bar-container">
+        <input
+          type="text"
+          v-model="search"
+          placeholder="Search"
+          class="search-bar"
+        />
       </div>
+      <div class="role-selection">
+        <button
+          @click="selectRole('ph operator')"
+          :class="{ active: currentRole === 'ph operator' }"
+        >
+          PH Operator
+        </button>
+        <button
+          @click="selectRole('wh operator')"
+          :class="{ active: currentRole === 'wh operator' }"
+        >
+          WH Operator
+        </button>
+      </div>
+    </div>
   </header>
 </template>
 
 <script>
-import { EventBus } from '@/utils/EventBus'; // Pastikan menggunakan huruf besar/kecil yang sesuai
+import { EventBus } from "@/utils/EventBus"; // Pastikan menggunakan huruf besar/kecil yang sesuai
 
 export default {
   data() {
-      return {
-          search:""
-      };
+    return {
+      search: "",
+    };
   },
   props: {
-      currentRole: {
-          type: String,
-          required: true
-      },
-      isSidebarVisible: {
-          type: Boolean,
-          required: true
-      }
+    currentRole: {
+      type: String,
+      required: true,
+    },
+    isSidebarVisible: {
+      type: Boolean,
+      required: true,
+    },
   },
   watch: {
-      search(newQuery) {
-          EventBus.$emit('search', newQuery);
-      }
+    search(newQuery) {
+      EventBus.$emit("search", newQuery);
+    },
   },
   methods: {
-      selectRole(role) {
-          this.$emit('update-role', role);
-      },
-      toggleSidebar() {
-          this.$emit('toggle-sidebar');
-      }
-  }
+    selectRole(role) {
+      this.$emit("update-role", role);
+    },
+    toggleSidebar() {
+      this.$emit("toggle-sidebar");
+    },
+  },
 };
 </script>
 
@@ -120,19 +135,19 @@ button.active {
 }
 @media (max-width: 768px) {
   header {
-      width: 100%;
-      left: 0;
+    width: 100%;
+    left: 0;
   }
   .header-content {
-      flex-direction: column;
+    flex-direction: column;
   }
   .search-bar-container {
-      margin-right: 0;
-      margin-bottom: 10px;
-      margin-top: 16px;
+    margin-right: 0;
+    margin-bottom: 10px;
+    margin-top: 16px;
   }
   .toggle-btn {
-      display: block;
+    display: block;
   }
 }
 </style>

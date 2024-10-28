@@ -3,7 +3,7 @@
     <p></p>
     <a class="logo">AXICODE</a>
     <ul>
-      <li v-if="currentRole === 'admin'">
+      <li v-if="currentRole === 'ph operator'">
         <a href="#" @click.prevent="showComponent('users')">
           <i class="fas fa-home"></i> Master Data Pekerja
         </a>
@@ -26,24 +26,24 @@
       </li>
     </ul>
   </div>
-</template>  
+</template>
 
 <script>
 export default {
   props: {
-      currentRole: {
-          type: String,
-          required: true,
-      },
-      isSidebarVisible: {
-          type: Boolean,
-          required: true,
-      },
+    currentRole: {
+      type: String,
+      required: true,
+    },
+    isSidebarVisible: {
+      type: Boolean,
+      required: true,
+    },
   },
   methods: {
-      showComponent(component) {
-          this.$emit("showComponent", component);
-      },
+    showComponent(component) {
+      this.$emit("showComponent", component);
+    },
   },
   emits: ["showComponent"],
 };
@@ -51,20 +51,20 @@ export default {
 
 <style scoped>
 .sidebar {
-width: 200px;
-background: #4b3f6b;
-color: white;
-height: 100vh;
-position: fixed;
-top: 0;
-left: 0;
-z-index: 999;
-font-size: 18px;
-font-family: sans-serif;
-transition: transform 0.3s ease;
+  width: 200px;
+  background: #4b3f6b;
+  color: white;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  font-size: 18px;
+  font-family: sans-serif;
+  transition: transform 0.3s ease;
 }
 .d-none {
-display: none;
+  display: none;
 }
 .sidebar.hidden {
   transform: translateX(-100%);

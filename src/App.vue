@@ -8,10 +8,10 @@
     />
     <div class="app-content">
       <Sidebar
-      :currentRole="currentRole"
-      :isSidebarVisible="isSidebarVisible"
-      @showComponent="navigateTo"
-    />
+        :currentRole="currentRole"
+        :isSidebarVisible="isSidebarVisible"
+        @showComponent="navigateTo"
+      />
       <div class="main-content" :class="{ expanded: isSidebarVisible }">
         <component
           :is="currentView"
@@ -33,7 +33,7 @@ import Header from "./components/dashboard/Header.vue";
 import Sidebar from "./components/dashboard/Sidebar.vue";
 import AdminView from "./views/AdminView.vue";
 import UserView from "./views/UserView.vue";
-import { EventBus } from '@/utils/EventBus'; 
+import { EventBus } from "@/utils/EventBus";
 
 export default {
   components: {
@@ -45,14 +45,14 @@ export default {
   data() {
     const params = new URLSearchParams(window.location.search);
     return {
-      currentRole: params.get("role") || "admin",
+      currentRole: params.get("role") || "ph operator",
       currentComponent: params.get("component") || "users",
       isSidebarVisible: params.get("sidebar") !== "hidden",
     };
   },
   computed: {
     currentView() {
-      return this.currentRole === "admin" ? AdminView : UserView;
+      return this.currentRole === "ph operator" ? AdminView : UserView;
     },
   },
   methods: {
@@ -60,7 +60,7 @@ export default {
       this.currentRole = role;
       this.navigateTo("items");
     },
-    navigateTo(component ){
+    navigateTo(component) {
       this.currentComponent = component;
       this.updateURLParams();
     },
@@ -74,17 +74,17 @@ export default {
       params.set("component", this.currentComponent);
       params.set("sidebar", this.isSidebarVisible ? "visible" : "hidden");
       window.history.replaceState(
-      {}, 
-      "", 
-      `${window.location.pathname}?${params}`
+        {},
+        "",
+        `${window.location.pathname}?${params}`
       );
     },
   },
   mounted() {
-    EventBus.on('search', this.handleSearch);
+    EventBus.on("search", this.handleSearch);
   },
   beforeUnmount() {
-    EventBus.off('search', this.handleSearch);
+    EventBus.off("search", this.handleSearch);
   },
 };
 </script>
