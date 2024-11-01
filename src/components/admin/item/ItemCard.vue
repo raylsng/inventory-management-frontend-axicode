@@ -1,12 +1,26 @@
 <!-- Komponen Custom -->
 <template>
-  <div class="item-card">
-    <h3>{{ item.name }}</h3>
-    <p>{{ item.deskripsi }}</p>
-    <p class="stock">Stok: {{ item.stok }}</p>
-    <div class="buttons">
-      <button @click="$emit('edit-item', item)" class="edit">Edit</button>
-      <button @click="$emit('delete-item', item.kode)" class="delete">Delete</button>
+  <div class="container">
+    <div class="item-card card shadow-sm bg-secondary-subtle">
+      <div class="card-body">
+        <h3 class="card-title">{{ item.nama }}</h3>
+        <p class="card-text">{{ item.deskripsi }}</p>
+        <p class="card-text stock">Stok: {{ item.stok }}</p>
+        <div class="buttons d-flex gap-2 mt-3">
+          <button
+            @click="$emit('edit-item', item)"
+            class="btn btn-success edit"
+          >
+            Edit
+          </button>
+          <button
+            @click="$emit('delete-item', item.kode)"
+            class="btn btn-danger delete"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -23,57 +37,36 @@ export default {
 };
 </script>
 
-
 <style scoped>
-.item-card  {
-    border: 1px solid #ddd;
-    padding: 16px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+.item-card {
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-.item-card h3 {
-    margin: 0 0 10px;
-    font-size: 1.5em;
-    color: #333;
+.item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.item-card p {
-    margin: 5px 0;
-    color: #555;
+.item-card .card-title {
+  margin: 0 0 10px;
+  font-size: 1.5em;
+  color: #333;
+}
+.item-card .card-text {
+  margin: 5px 0;
+  color: #555;
 }
 .item-card .stock {
-    font-weight: bold;
-    color: #2c3e50;
+  font-weight: bold;
+  color: #2c3e50;
 }
-.item-card .buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+.item-card .buttons .btn {
+  transition: background-color 0.2s, border-color 0.2s;
 }
-.item-card button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.item-card .buttons .btn:hover {
+  background-color: darken(#28a745, 10%);
+  border-color: darken(#28a745, 10%);
 }
-.item-card button:hover {
-    background-color: #ddd;
-}
-.item-card button.edit {
-    background-color: #4caf50;
-    color: white;
-}
-.item-card button.edit:hover {
-    background-color: #45a049;
-}
-.item-card button.delete {
-    background-color: #e74c3c;
-    color: white;
-}
-.item-card button.delete:hover {
-    background-color: #c0392b;
+.item-card .buttons .btn.delete:hover {
+  background-color: darken(#dc3545, 10%);
+  border-color: darken(#dc3545, 10%);
 }
 </style>
