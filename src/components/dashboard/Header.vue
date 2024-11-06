@@ -1,6 +1,6 @@
 <template>
   <header :class="{ expanded: !isSidebarVisible }">
-    <button class="toggle-btn" @click="toggleSidebar">☰</button>
+    <button class="toggle-btn rounded" @click="toggleSidebar">☰</button>
     <div class="header-content">
       <div class="search-bar-container">
         <input
@@ -12,12 +12,14 @@
       </div>
       <div class="role-selection">
         <button
+          class="btn btn-outline-light"
           @click="selectRole('ph operator')"
           :class="{ active: currentRole === 'ph operator' }"
         >
           PH Operator
         </button>
         <button
+          class="btn btn-outline-light"
           @click="selectRole('wh operator')"
           :class="{ active: currentRole === 'wh operator' }"
         >
@@ -65,7 +67,7 @@ export default {
 
 <style scoped>
 header {
-  background-color: #4b3f6b;
+  background-color: #2980b9;
   padding: 10px 60px 10px 0;
   display: flex;
   align-items: center;
@@ -73,7 +75,7 @@ header {
   width: calc(100% - 180px);
   position: fixed;
   top: 0;
-  left: 230px;
+  left: 215px;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: width 0.3s ease, left 0.3s ease;
@@ -114,24 +116,27 @@ header.expanded {
 .role-selection {
   display: flex;
   justify-content: center;
-  background-color: #4b3f6b;
+  background-color: #2980b9;
   padding: 10px;
 }
 button {
   margin: 0 10px;
   padding: 5px 10px;
   font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
-  border: none;
-  background-color: #4b3f6b;
-  color: white;
+  /* border: none; */
+  /* background-color: #4b3f6b;
+  color: white; */
   transition: background-color 0.3s ease;
 }
 button:hover {
-  background-color: #6b5bb8;
+  background-color: #ffffff;
+  color: #211f24;
 }
 button.active {
-  background-color: #6b5bb8;
+  background-color: #ffffff;
+  color: #211f24;
 }
 @media (max-width: 768px) {
   header {

@@ -6,7 +6,7 @@
     >
       AXICODE</a
     >
-    <ul class="nav flex-column">
+    <ul class="nav flex-column fs-6">
       <li v-if="currentRole === 'ph operator'" class="nav-item mb-2">
         <a
           href="#"
@@ -71,8 +71,8 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 230px;
-  background: #4b3f6b;
+  width: 215px;
+  background: #2980b9;
   color: white;
   padding: 14px;
   height: 100vh;
@@ -90,8 +90,8 @@ export default {
   color: white;
   cursor: pointer;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  align-items: start;
   margin-left: 8px;
   padding: 10px 0;
   transition: background-color 0.3s ease;

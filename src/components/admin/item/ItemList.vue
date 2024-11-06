@@ -1,5 +1,5 @@
 <template>
-  <div class="item-list container my-5 bg-white rounded shadow-sm">
+  <div class="item-list container my-5 bg-white rounded">
     <div
       v-if="deleteSuccess"
       class="alert alert-success alert-dismissible fade show"
@@ -14,8 +14,8 @@
       ></button>
     </div>
     <div class="header d-flex justify-content-between align-items-center mb-3">
-      <h2>List Data Material</h2>
-      <button class="btn btn-primary" @click="showAddForm">
+      <h2 class="mt-2">List Data Material</h2>
+      <button class="btn btn-primary mt-2" @click="showAddForm">
         Tambah Material
       </button>
     </div>
@@ -139,8 +139,11 @@ export default {
 <style scoped>
 .item-list {
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+.item-list:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 .header h2 {
   color: #4b3f6b;
