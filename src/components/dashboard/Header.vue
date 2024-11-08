@@ -13,15 +13,15 @@
       <div class="role-selection">
         <button
           class="btn btn-outline-light"
-          @click="selectRole('ph operator')"
-          :class="{ active: currentRole === 'ph operator' }"
+          @click="selectRole('phOperator')"
+          :class="{ active: currentRole === 'phOperator' }"
         >
           PH Operator
         </button>
         <button
           class="btn btn-outline-light"
-          @click="selectRole('wh operator')"
-          :class="{ active: currentRole === 'wh operator' }"
+          @click="selectRole('whOperator')"
+          :class="{ active: currentRole === 'whOperator' }"
         >
           WH Operator
         </button>

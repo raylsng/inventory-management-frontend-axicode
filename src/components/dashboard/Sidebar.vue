@@ -8,7 +8,7 @@
     >
     <ul class="nav flex-column fs-6">
       <li
-        v-if="currentRole === 'ph operator'"
+        v-if="currentRole === 'phOperator'"
         class="nav-item mb-2"
         :class="{ 'active-nav': activeComponent === 'users' }"
       >
@@ -118,7 +118,7 @@ export default {
   transition: background-color 0.3s ease;
 }
 .active-nav {
-  background-color: #ff245bc1;
+  background-color: #191616;
   border-radius: 5px;
 }
 .nav-item:hover {
