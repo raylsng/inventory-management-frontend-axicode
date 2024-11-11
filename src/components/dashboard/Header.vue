@@ -25,6 +25,11 @@
         >
           WH Operator
         </button>
+        <div class="logout-container">
+          <button class="logout-btn btn btn-outline-light" @click="logout">
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -57,9 +62,25 @@ export default {
   methods: {
     selectRole(role) {
       this.$emit("update-role", role);
+      const authRole = localStorage.getItem("role");
+      const isAuthenticated = Boolean(localStorage.getItem("auth"));
+      if (isAuthenticated && authRole === role) {
+        this.$router.push({ name: role, params: { component: "items" } });
+      } else {
+        alert("Anda harus logout dulu untuk pindah role");
+        this.$router.push({ name: "login" });
+        this.$emit("toggle-sidebar", false);
+      }
     },
     toggleSidebar() {
       this.$emit("toggle-sidebar");
+    },
+    logout() {
+      localStorage.removeItem("auth");
+      localStorage.removeItem("role");
+      this.$emit("update-role", "phOperator");
+      this.$emit("toggle-sidebar", false);
+      this.$router.push({ name: "login" });
     },
   },
 };
