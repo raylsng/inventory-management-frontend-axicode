@@ -45,6 +45,8 @@
 import ItemCard from "./ItemCard.vue";
 import Modal from "../../Modal.vue";
 import ItemForm from "./ItemForm.vue";
+import { useItemStore } from "@/store/itemStore";
+import { EventBus } from "@/utils/EventBus";
 
 export default {
   //export komponen custom
@@ -63,24 +65,34 @@ export default {
       deleteSuccess: false,
     };
   },
+  computed: {
+    items() {
+      return this.itemStore.items; // mengakses itemsStore dari store pinia
+    },
+    filteredItems() {
+      return this.items.filter((item) => {
+        return (
+          item.kode.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          item.nama.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      });
+    },
+  },
 
   methods: {
     showAddForm() {
-      //text lms (beda dikit)
       this.selectedItem = { kode: "", nama: "", deskripsi: "", stok: 0 };
       this.isEdit = false;
       this.showForm = true;
     },
 
     editItem(item) {
-      // lms text dan video
       this.selectedItem = { ...item };
       this.isEdit = true;
       this.showForm = true;
     },
 
     handleSubmit(item) {
-      //text lms
       if (
         item.kode &&
         item.nama &&
@@ -89,11 +101,9 @@ export default {
         !isNaN(item.stok)
       ) {
         if (this.isEdit) {
-          const index = this.items.findIndex((i) => i.kode === item.kode);
-
-          this.items[index] = item;
+          this.itemStore.updateItem(item); // memanggil action update item dari store
         } else {
-          this.items.push(item);
+          this.itemStore.addItem(item); // memanggil action add item dari store
         }
       }
 
@@ -108,13 +118,26 @@ export default {
 
     deleteItem(kode) {
       if (window.confirm("Apakah Anda yakin ingin menghapus item ini?")) {
-        this.items = this.items.filter((item) => item.kode !== kode);
+        this.itemStore.deleteItem(kode); // memangil action delete dari store
         this.deleteSuccess = true; // Tampilkan pesan sukses
         setTimeout(() => (this.deleteSuccess = false), 3000); // Hilangkan pesan setelah 3 detik
       }
     },
+    handleSearch(query) {
+      this.searchQuery = query;
+    },
   },
-}; // end of export default
+  mounted() {
+    EventBus.on("search", this.handleSearch);
+  },
+  beforeUnmount() {
+    EventBus.off("search", this.handleSearch);
+  },
+  setup() {
+    const itemStore = useItemStore();
+    return { itemStore };
+  },
+};
 </script>
 
 <style scoped>

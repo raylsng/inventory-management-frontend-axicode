@@ -5,13 +5,13 @@ export const useItemStore = defineStore('itemStore', {
             {
                 kode: "2024001",
                 nama: "Samsung Galaxy A55 5G",
-                deskripsi: "RAM 8, ROM 256, LAYAR SUPER AMOLED 6,6 INCI, CHIPSET EXYNOS 1480",
+                deskripsi: "RAM 8, ROM 256, LAYAR SUPER AMOLED 6,6 INCI, CHIPSET EXYNOS 1480, ANDROID 14 ONE UI, 5000 MAH, 12/50 MP ULTRA WIDE/WIDE",
                 stok: 80,
               },
               {
                 kode: "2024002",
                 nama: "REDMI NOTE 14 PRO 5G",
-                deskripsi: "Chipset, MediaTek Dimensity 7300 Ultra; CPU, Octa-core (4x2.5 GHz Cortex-A78 & 4x2.0 GHz Cortex-A55); GPU, Mali-G615 MC2; RAM, 8 GB, 12 GB.",
+                deskripsi: "Chipset, MediaTek Dimensity 7300 Ultra; CPU, Octa-core (4x2.5 GHz Cortex-A78 & 4x2.0 GHz Cortex-A55); GPU, Mali-G615 MC2; RAM 8/12 GB.",
                 stok: 80,
               },
               {
