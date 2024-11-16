@@ -43,4 +43,5 @@ export const useItemStore = defineStore('itemStore', {
             this.items = this.items.filter(item => item.kode !== kode);
         },
     },
+    persist: true, // mengaktifkan persistensi state
 });
