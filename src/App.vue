@@ -1,18 +1,25 @@
 <template>
   <div id="app">
     <Header
+      v-if="showHeader"
       :currentRole="currentRole"
       @update-role="updateRole"
       @toggle-sidebar="toggleSidebar"
       :isSidebarVisible="isSidebarVisible"
     />
-    <div class="app-content">
+    
+    <!-- menambahkan :class="{ noHeader: !showHeader }  -->
+    <div class="app-content" :class="{ noHeader: !showHeader }">
       <Sidebar
+        v-if="showSidebar"
         :currentRole="currentRole"
         :isSidebarVisible="isSidebarVisible"
         @showComponent="navigateTo"
       />
-      <div class="main-content" :class="{ expanded: isSidebarVisible }">
+      
+      <!-- menambahkan && showSidebar  -->
+      <div class="main-content" :class="{ expanded: isSidebarVisible && showSidebar }">
+        
         <!-- mengganti yang awalnya manual dengan router view -->
         <router-view
           :key="$route.fullPath"
@@ -20,8 +27,10 @@
         />
       </div>
     </div>
+
   </div>
 </template>
+
 <script>
 import Header from "./components/dashboard/Header.vue";
 import Sidebar from "./components/dashboard/Sidebar.vue";
@@ -40,33 +49,55 @@ export default {
       searchTerm: "",
     };
   },
+  
+  // mengedit kode computed dan menambah showHeader - showSidebar
+  computed: {
+    showHeader() {
+      return !this.$route.meta.hideHeader;
+    },
+    showSidebar() {
+      return !this.$route.meta.hideSidebar;
+    },
+  },
+
   // menambah watch untuk router
   watch: {
     "$route.name"(newRole) {
       this.currentRole = newRole;
     },
   },
-  computed: {
-    currentView() {
-      return this.currentRole === "phOperator" ? AdminView : UserView;
-    },
-  },
+  // merubah isi kode dari methods
   methods: {
     updateRole(role) {
       this.currentRole = role;
-      this.navigateTo("items");
     },
+
     navigateTo(component) {
-      this.currentComponent = component;
-      // mengganti update params manual dengan router
-      this.$router.push({ name: this.currentRole, params: { component } });
+      
+      if (this.currentRole === "PH_OPERATOR") {
+        this.$router.push({ name: "phOperator", params: { component } });
+      } else if (this.currentRole === "WH_OPERATOR") {
+        this.$router.push({ name: "whOperator" });
+      } else {
+        this.$router.push({ name: "login" });
+      }
     },
+
     toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible;
-      //hapus update params manual karena sudah pake router
     },
-    // menghapus metode update url params
+
+    handleSearch(newQuery) {
+      console.log("Search term:", newQuery);
+      if (this.currentRole === "phOperator") {
+        console.log("Search in admin items"); //merubah currentRole dari admin ke phOperator
+      } else if (this.currentRole === "whOperator") {
+        console.log("Search in user items"); //merubah currentRole dari admin ke whOperator
+      }
+    },
+
   },
+
   mounted() {
     EventBus.on("search", this.handleSearch);
   },
@@ -75,7 +106,16 @@ export default {
   },
 };
 </script>
-<style>
+
+<style scoped>
+
+/* menambah ini */
+html, body {
+height: 100%;
+margin: 0;
+background-color: #2980b9;
+}
+
 #app {
   display: flex;
   flex-direction: column;
@@ -83,15 +123,41 @@ export default {
 }
 .app-content {
   display: flex;
-  height: 100%;
+  /* height: 100%; */
+
+  flex-grow: 1;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font: 1em sans-serif;
+  height: calc(100vh - 60px);
+  margin-top: 60px;
+  background-color: #2980b9;
 }
 .main-content {
   flex: 1;
-  padding: 20px;
+  /* padding: 20px; */
   background-color: #ffffff;
   transition: margin-left 0.3s ease;
 }
 .main-content.expanded {
   margin-left: 200px;
+}
+
+
+.app-content.noHeader {
+  margin-top: 0;
+  height: 100vh;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 180px;
+  }
+
+  .app-content.noHeader {
+    margin-top: 0;
+    height: calc(100vh - 60px);
+  }
+
 }
 </style>

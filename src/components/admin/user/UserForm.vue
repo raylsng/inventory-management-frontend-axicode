@@ -26,8 +26,8 @@
                     <td>
                         <select v-model="form.role" required>
                             <option value="" disabled>Pilih role</option>
-                            <option value="Admin">PH Operator</option>
-                            <option value="User">WH Operator</option>
+                            <option value="PH_OPERATOR">PH Operator</option> <!-- value revised from ADMIN to PH_Operator-->
+                            <option value="WH_Operator">WH Operator</option> <!-- value revised from USER to WH_Operator-->
                         </select>
                     </td>
                 </tr>

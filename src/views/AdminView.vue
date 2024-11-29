@@ -9,14 +9,14 @@
         <UserList v-if="currentComponent === 'users'" />
         <TransactionList v-if="currentComponent === 'transactions'" />
       </div>
-      <AllModal
+      <Modal
         v-if="showForm"
         :isVisible="showForm"
         @close="cancelEditForm"
         :title="isEdit ? 'Edit Barang' : 'Tambah Barang'"
       >
         <ItemForm :item="selectedItem" :isEdit="isEdit" @submit="handleSubmit" />
-      </AllModal>
+      </Modal>
     </div>
   </template>
   

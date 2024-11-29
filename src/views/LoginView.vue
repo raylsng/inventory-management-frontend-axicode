@@ -10,8 +10,8 @@
           <div class="form-group mb-3">
             <label for="role" class="form-label">Role:</label>
             <select v-model="role" id="role" class="form-control">
-              <option value="phOperator">PH Operator</option>
-              <option value="whOperator">WH Operator</option>
+              <option value="PH_OPERATOR">PH Operator</option>
+              <option value="WH_Operator">WH Operator</option>
             </select>
           </div>
           <button type="submit" class="btn btn-primary w-100">Login</button>
@@ -25,7 +25,7 @@
 export default {
   data() {
     return {
-      role: "phOperator",
+      role: "PH_OPERATOR",
     };
   },
   methods: {
