@@ -1,30 +1,61 @@
 <template>
   <div :class="['sidebar', { 'd-none': !isSidebarVisible }]">
-    <a class="logo d-block text-center mb-4 text-white">AXICODE</a>
-    <ul class="nav flex-column" >
-      <li v-if="currentRole === 'admin'" class="nav-item">
-        <a href="#" @click.prevent="showComponent('users')" class="nav-link text-white d-flex align-items-center">
-          <i class="bi bi-house-door me-2"></i> Users
+    <a class="logo d-flex justify-content-center align-items-center text-center mb-4 text-white text-decoration-none fw-bold fs-5">AXICODE</a>
+    <ul class="nav flex-column fs-6">
+      <li
+        v-if="currentRole === 'phOperator'"
+        class="nav-item mb-2"
+      >
+        <a
+          href="#"
+          @click.prevent="showComponent('users')"
+          class="nav-link d-flex align-items-center"
+        >
+          <i class="bi bi-house-door me-2"></i> Master Data Pekerja
         </a>
       </li>
-      <li class="nav-item">
-        <a href="#" @click.prevent="showComponent('items')" class="nav-link text-white d-flex align-items-center">
-          <i class="bi bi-box me-2"></i> Items
+
+      <li
+        class="nav-item mb-2"
+        :class="{ 'active-nav': activeComponent === 'items' }"
+      >
+        <a
+          href="#"
+          @click.prevent="showComponent('items')"
+          class="nav-link d-flex align-items-center"
+        >
+          <i class="bi bi-box me-2"></i> Master Data Material
         </a>
       </li>
-      <li class="nav-item">
-        <a href="#" @click.prevent="showComponent('transactions')" class="nav-link text-white d-flex align-items-center">
-          <i class="bi bi-cash me-2"></i> Transactions
+
+      <li
+        class="nav-item mb-2"
+        :class="{ 'active-nav': activeComponent === 'transactions' }"
+      >
+        <a
+          href="#"
+          @click.prevent="showComponent('transactions')"
+          class="nav-link d-flex align-items-center"
+        >
+          <i class="bi bi-file-earmark-text me-2"></i> Surat Perintah Kerja
         </a>
       </li>
-      <li v-if="currentRole == 'user'" class="nav-item">
-        <a href="#" @click.prevent="showComponent('history')" class="nav-link text-white d-flex align-items-center">
+
+      <li
+        class="nav-item"
+        :class="{ 'active-nav': activeComponent === 'history' }"
+      >
+        <a
+          href="#"
+          @click.prevent="showComponent('history')"
+          class="nav-link d-flex align-items-center"
+        >
           <i class="bi bi-clock-history me-2"></i> History
         </a>
       </li>
     </ul>
   </div>
-</template>  
+</template>
 
 <script>
 export default {
