@@ -22,8 +22,9 @@ export default {
     props: {
         component: {
             type: String,
-            required: true
-        }
+            required: true,
+            default: "items",
+        },
     },
     computed: {
         currentComponent() {
