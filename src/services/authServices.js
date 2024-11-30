@@ -35,7 +35,7 @@ export const register = async (username, email, password) => {
       username,
       email,
       password,
-    });
+    })
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

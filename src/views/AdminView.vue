@@ -1,11 +1,7 @@
 <template>
     <div class="admin-view">
       <div class="scrollable-content">
-        <ItemList
-          v-if="currentComponent === 'items'"
-          @edit-item="showEditForm"
-          @add-item="showAddForm"
-        />
+        <ItemList v-if="currentComponent === 'items'" />
         <UserList v-if="currentComponent === 'users'" />
         <TransactionList v-if="currentComponent === 'transactions'" />
       </div>
@@ -36,38 +32,15 @@
       Modal,
     },
     props: {
-      currentComponent: {
+      component: {
         type: String,
         required: true,
+        default: "users",
       },
     },
-    data() {
-      return {
-        showForm: false,
-        selectedItem: null,
-        isEdit: false,
-      };
-    },
-    methods: {
-      showEditForm(item) {
-        this.selectedItem = item;
-        this.isEdit = true;
-        this.showForm = true;
-      },
-      showAddForm() {
-        this.selectedItem = null;
-        this.isEdit = false;
-        this.showForm = true;
-      },
-      handleSubmit() {
-        this.showForm = false;
-        this.selectedItem = null;
-        this.isEdit = false;
-      },
-      cancelEditForm() {
-        this.showForm = false;
-        this.selectedItem = null;
-        this.isEdit = false;
+    computed: {
+      currentComponent() {
+        return this.component;
       },
     },
   };

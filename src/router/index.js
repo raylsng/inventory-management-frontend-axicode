@@ -51,7 +51,7 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore(); //untuk mendapatkan state autentikasi pengguna dari store
@@ -92,4 +92,4 @@ router.beforeEach((to, from, next) => {
         }
 });
 
-export default router
+export default router;

@@ -5,7 +5,7 @@
       :currentRole="currentRole"
       @update-role="updateRole"
       @toggle-sidebar="toggleSidebar"
-      :isSidebarVisible="isSidebarVisible"
+      :isSidebarVisible="isSidebarVisible" 
     />
     
     <!-- menambahkan :class="{ noHeader: !showHeader }  -->
@@ -27,7 +27,6 @@
         />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -75,7 +74,7 @@ export default {
     navigateTo(component) {
       
       if (this.currentRole === "PH_OPERATOR") {
-        this.$router.push({ name: "phOperator", params: { component } });
+        this.$router.push({ name: this.currentRole, params: { component } });
       } else if (this.currentRole === "WH_OPERATOR") {
         this.$router.push({ name: "whOperator" });
       } else {
