@@ -25,58 +25,63 @@
 </template>
 
 <script>
+import { computed, onMounted } from "vue";
+import { useUserStore } from "@/store/userStore";
+import { useAuthStore } from "@/store/authStore";
 import UserCard from "./UserCard.vue";
 import Modal from "@/components/Modal.vue";
 import UserForm from "./UserForm.vue";
+import EventBus from "@/utils/EventBus";
 
 export default {
+  name: "users",
   components: {
     UserCard,
     Modal,
     UserForm,
   },
+  setup() {
+    const userStore = useUserStore();
+    const authStore = useAuthStore();
+    const users = computed(() => userStore.users);
+    onMounted(() => {
+      if (authStore.token) {
+        userStore.fetchUser();
+      } else {
+        console.error("User is not authenticated");
+      }
+    });
+    return {
+      users,
+      userStore,
+      addUser: userStore.addUser,
+      updateUser: userStore.updateUser,
+      deleteUser: userStore.deleteUser,
+    };
+  },
   data() {
     return {
-      users: [
-        {
-          id: 1,
-          name: "Amanda",
-          email: "Amanda@example.com",
-          role: "PH Operator",
-        },
-        {
-          id: 2,
-          name: "Risqi",
-          email: "Risqi@example.com",
-          role: "PH Operator",
-        },
-        {
-          id: 2,
-          name: "Novi",
-          email: "Amanda@example.com",
-          role: "WH Operator",
-        },
-        {
-          id: 3,
-          name: "Raynaldi",
-          email: "Ray@example.com",
-          role: "WH Operator",
-        },
-        {
-          id: 2,
-          name: "Fikri",
-          email: "Fikri@example.com",
-          role: "WH Operator",
-        },
-      ],
       showForm: false,
       selectedUser: null,
       isEdit: false,
+      searchQuery: "",
     };
+  },
+  computed: {
+    filteredUsers() {
+      return this.users.filter((user) =>
+        user.username.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
   },
   methods: {
     showAddForm() {
-      this.selectedUser = { id: null, name: "", email: "", role: "" };
+      this.selectedUser = {
+        id: null,
+        username: "",
+        email: "",
+        role: "WH_OPERATOR",
+      };
       this.isEdit = false;
       this.showForm = true;
     },
@@ -85,34 +90,41 @@ export default {
       this.isEdit = true;
       this.showForm = true;
     },
-    handleSubmit(user) {
-      // Memastikan name, email, dan role terisi
-      if (user.name && user.email && user.role) {
-        if (this.isEdit) {
-          // Update pengguna yang ada
-          const index = this.users.findIndex((u) => u.id === user.id);
-          if (index !== -1) {
-            this.users[index] = { ...user }; // Mengupdate pengguna yang dipilih
-          }
-        } else {
-          // Tambah pengguna baru
-          user.id = this.users.length + 1; // Generate ID baru berdasarkan jumlah pengguna
-          this.users.push({ ...user }); // Tambah pengguna baru dengan semua data
-        }
+    async handleSubmit(user) {
+      if (this.isEdit) {
+        await this.updateUser(user);
+        await this.userStore.fetchUser();
+      } else {
+        await this.addUser(user);
+        await this.userStore.fetchUser();
       }
-      this.showForm = false; // Tutup form setelah submit
+      this.showForm = false;
     },
     cancelEditForm() {
       this.showForm = false;
     },
-    confirmDeleteUser(user) {
-      if (confirm(`Apakah Anda yakin ingin menghapus ${user.name}?`)) {
-        this.deleteUser(user.id);
+    async confirmDeleteUser(id) {
+      // Temukan user berdasarkan id
+      const user = this.users.find((u) => u.id === id);
+
+      if (!user) {
+        console.error("User not found!");
+        return;
+      }
+      if (confirm(`Apakah Anda yakin ingin menghapus ${user.username}?`)) {
+        await this.deleteUser(id);
+        await this.userStore.fetchUser();
       }
     },
-    deleteUser(id) {
-      this.users = this.users.filter((user) => user.id !== id);
+    handleSearch(query) {
+      this.searchQuery = query;
     },
+  },
+  onmounted() {
+    EventBus.on("search", this.handleSearch);
+  },
+  beforeUnmount() {
+    EventBus.off("search", this.handleSearch);
   },
 };
 </script>

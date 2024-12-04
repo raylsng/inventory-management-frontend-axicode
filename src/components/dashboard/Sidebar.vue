@@ -8,7 +8,7 @@
     >
     <ul class="nav flex-column fs-6">
       <li
-        v-if="currentRole === 'phOperator'"
+        v-if="currentRole === 'admin'"
         class="nav-item mb-2"
         :class="{ 'active-nav': activeComponent === 'users' }"
       >
