@@ -7,7 +7,7 @@
       @toggle-sidebar="toggleSidebar"
       :isSidebarVisible="isSidebarVisible"
     />
-    
+
     <!-- menambahkan :class="{ noHeader: !showHeader }  -->
     <div class="app-content" :class="{ noHeader: !showHeader }">
       <Sidebar
@@ -16,10 +16,12 @@
         :isSidebarVisible="isSidebarVisible"
         @showComponent="navigateTo"
       />
-      
+
       <!-- menambahkan && showSidebar  -->
-      <div class="main-content" :class="{ expanded: isSidebarVisible && showSidebar }">
-        
+      <div
+        class="main-content"
+        :class="{ expanded: isSidebarVisible && showSidebar }"
+      >
         <!-- mengganti yang awalnya manual dengan router view -->
         <router-view
           :key="$route.fullPath"
@@ -27,7 +29,6 @@
         />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -49,7 +50,7 @@ export default {
       searchTerm: "",
     };
   },
-  
+
   // mengedit kode computed dan menambah showHeader - showSidebar
   computed: {
     showHeader() {
@@ -73,7 +74,6 @@ export default {
     },
 
     navigateTo(component) {
-      
       if (this.currentRole === "PH_OPERATOR") {
         this.$router.push({ name: "phOperator", params: { component } });
       } else if (this.currentRole === "WH_OPERATOR") {
@@ -95,7 +95,6 @@ export default {
         console.log("Search in user items"); //merubah currentRole dari admin ke whOperator
       }
     },
-
   },
 
   mounted() {
@@ -108,12 +107,12 @@ export default {
 </script>
 
 <style scoped>
-
 /* menambah ini */
-html, body {
-height: 100%;
-margin: 0;
-background-color: #2980b9;
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #2980b9;
 }
 
 #app {
@@ -142,12 +141,11 @@ background-color: #2980b9;
   margin-left: 200px;
 }
 
-
 .app-content.noHeader {
   margin-top: 0;
   height: 100vh;
 }
-
+/* 
 @media (max-width: 768px) {
   .main-content {
     margin-left: 0;
@@ -159,5 +157,5 @@ background-color: #2980b9;
     height: calc(100vh - 60px);
   }
 
-}
+} */
 </style>

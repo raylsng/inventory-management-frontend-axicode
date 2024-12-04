@@ -83,11 +83,12 @@ export default {
       this.activeComponent = component;
       this.showComponent(component);
     },
+    // agar bisa pindah component
     showComponent(component) {
-      this.$emit("showComponent", component);
+      this.$router.push({ name: this.currentRole, params: { component } });
     },
   },
-  emits: ["showComponent"],
+  // emits: ["showComponent"],
 };
 </script>
 
