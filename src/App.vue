@@ -7,7 +7,6 @@
       @toggle-sidebar="toggleSidebar"
       :isSidebarVisible="isSidebarVisible"
     />
-
     <!-- menambahkan :class="{ noHeader: !showHeader }  -->
     <div class="app-content" :class="{ noHeader: !showHeader }">
       <Sidebar
@@ -16,7 +15,6 @@
         :isSidebarVisible="isSidebarVisible"
         @showComponent="navigateTo"
       />
-
       <!-- menambahkan && showSidebar  -->
       <div
         class="main-content"
@@ -31,12 +29,10 @@
     </div>
   </div>
 </template>
-
 <script>
 import Header from "./components/dashboard/Header.vue";
 import Sidebar from "./components/dashboard/Sidebar.vue";
 import { EventBus } from "@/utils/EventBus";
-
 export default {
   components: {
     Header,
@@ -50,7 +46,6 @@ export default {
       searchTerm: "",
     };
   },
-
   // mengedit kode computed dan menambah showHeader - showSidebar
   computed: {
     showHeader() {
@@ -60,7 +55,6 @@ export default {
       return !this.$route.meta.hideSidebar;
     },
   },
-
   // menambah watch untuk router
   watch: {
     "$route.name"(newRole) {
@@ -72,7 +66,6 @@ export default {
     updateRole(role) {
       this.currentRole = role;
     },
-
     navigateTo(component) {
       if (this.currentRole === "PH_OPERATOR") {
         this.$router.push({ name: "phOperator", params: { component } });
@@ -82,11 +75,9 @@ export default {
         this.$router.push({ name: "login" });
       }
     },
-
     toggleSidebar() {
       this.isSidebarVisible = !this.isSidebarVisible;
     },
-
     handleSearch(newQuery) {
       console.log("Search term:", newQuery);
       if (this.currentRole === "phOperator") {
@@ -96,7 +87,6 @@ export default {
       }
     },
   },
-
   mounted() {
     EventBus.on("search", this.handleSearch);
   },
@@ -105,7 +95,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 /* menambah ini */
 html,
@@ -114,7 +103,6 @@ body {
   margin: 0;
   background-color: #2980b9;
 }
-
 #app {
   display: flex;
   flex-direction: column;
@@ -123,7 +111,6 @@ body {
 .app-content {
   display: flex;
   /* height: 100%; */
-
   flex-grow: 1;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font: 1em sans-serif;
@@ -151,7 +138,6 @@ body {
     margin-left: 0;
     margin-top: 180px;
   }
-
   .app-content.noHeader {
     margin-top: 0;
     height: calc(100vh - 60px);

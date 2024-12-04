@@ -5,16 +5,13 @@
       <!-- Curved overlay -->
       <div class="curved-overlay"></div>
     </div>
-
     <!-- Login form section -->
     <div class="register-form-section">
       <!-- Logo -->
       <img src="@/assets/logo.png" alt="Logo" class="logo" />
-
       <div class="register-content">
         <h1 class="register-title text-center">REGISTER</h1>
         <p class="register-subtitle text-center">AXICODE WAREHOUSE</p>
-
         <form @submit.prevent="register">
           <div class="input-group">
             <span class="input-group-text"
@@ -38,7 +35,6 @@
               class="form-control"
             />
           </div>
-
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
             <input
@@ -97,7 +93,6 @@
         <div class="mt-3 text-center">
           <p class="text-muted">
             Already have an account?
-
             <a
               href="#"
               @click.prevent="$emit('switch', 'Login')"
@@ -114,7 +109,6 @@
 <script>
 import { register as registerService } from "@/services/authServices";
 import Swal from "sweetalert2";
-
 export default {
   data() {
     return {
@@ -129,7 +123,6 @@ export default {
       confirmPasswordVisible: false, // Kontrol status visibilitas password
     };
   },
-
   methods: {
     async register() {
       // validasi username
@@ -180,7 +173,6 @@ export default {
         }, 4000);
         return;
       }
-
       try {
         const response = await registerService(
           this.username,
@@ -222,14 +214,12 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .register-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
-
 .warehouse-section {
   flex: 1;
   background-image: url("@/assets/warehouse.jpg");
@@ -237,7 +227,6 @@ export default {
   background-position: center;
   position: relative;
 }
-
 .curved-overlay {
   position: absolute;
   top: 0;
@@ -247,7 +236,6 @@ export default {
   background-color: #2980b9;
   border-radius: 100% 0 0 100%;
 }
-
 .register-form-section {
   flex: 1;
   background-color: #2980b9;
@@ -258,7 +246,6 @@ export default {
   justify-content: center;
   position: relative;
 }
-
 .logo {
   position: absolute;
   top: -5px;
@@ -266,26 +253,22 @@ export default {
   width: 120px;
   height: auto;
 }
-
 .register-content {
   width: 100%;
   max-width: 400px;
   padding: 0 2rem;
 }
-
 .register-title {
   font-size: 2.5rem;
   font-weight: bold;
   color: white;
   margin-bottom: 0.5rem;
 }
-
 .register-subtitle {
   color: white;
   margin-bottom: 2rem;
   font-size: 0.9rem;
 }
-
 .input-group {
   margin-bottom: 1rem;
 }
@@ -314,7 +297,6 @@ export default {
   border: none;
   background-color: white;
 }
-
 .toggle-password:hover {
   color: #333;
 }
@@ -330,7 +312,6 @@ export default {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
 .register-button:hover {
   background-color: #45a049;
 }
@@ -346,11 +327,9 @@ export default {
     flex: none;
     height: 100vh;
   }
-
   .warehouse-section {
     display: none;
   }
-
   .register-form-section {
     flex: none;
     width: 100%;
@@ -369,7 +348,6 @@ export default {
     height: auto;
     color: white;
   }
-
   .register-content {
     width: 100%; /* Maksimalkan lebar login form */
     max-width: 350px; /* Atur batas maksimal agar tetap proporsional */
@@ -381,30 +359,24 @@ export default {
     transform: translateY(-1px);
     box-shadow: 0 8px 16px rgb(255, 255, 255, 0.2);
   }
-
   .register-title {
     font-size: 1.8rem;
   }
-
   .register-subtitle {
     font-size: 0.85rem;
   }
-
   .input-group {
     margin-bottom: 1rem;
   }
-
   .form-control {
     font-size: 1rem;
     padding: 0.5rem; /* Perkecil padding input */
   }
-
   .forgot-password {
     text-align: center; /* Tengah-tengahkan link */
     font-size: 0.8rem;
     margin-bottom: 1rem;
   }
-
   .register-button {
     width: 100%;
     padding: 0.6rem;
