@@ -34,22 +34,22 @@ export default {
     data() {
         return {
             histories: [
-                {
-                    id: 1,
-                    namaBarang: "Acer Nitro 15 AN515-58",
-                    jumlahPinjam: 1,
-                    tanggalPinjam: "2023-05-01",
-                    tanggalKembali: "2023-05-10",
-                    status: "selesai"
-                },
-                {
-                    id: 2,
-                    namaBarang: "Lenovo LOQ 15 15IRH8",
-                    jumlahPinjam: 2,
-                    tanggalPinjam: "2023-06-15",
-                    tanggalKembali: "2023-06-20",
-                    status: "diproses"
-                },
+                // {
+                //     id: 1,
+                //     namaBarang: "Acer Nitro 15 AN515-58",
+                //     jumlahPinjam: 1,
+                //     tanggalPinjam: "2023-05-01",
+                //     tanggalKembali: "2023-05-10",
+                //     status: "selesai"
+                // },
+                // {
+                //     id: 2,
+                //     namaBarang: "Lenovo LOQ 15 15IRH8",
+                //     jumlahPinjam: 2,
+                //     tanggalPinjam: "2023-06-15",
+                //     tanggalKembali: "2023-06-20",
+                //     status: "diproses"
+                // },
             ],
         };
     },
@@ -66,7 +66,7 @@ export default {
 }
 h2 {
     margin-bottom: 20px;
-    color: #4b3f6b;
+    color: #2980b9;
     text-align: center;
     font-size: 24px;
 }
@@ -81,7 +81,7 @@ th,td {
     text-align: left;
 }
 th {
-    background-color: #4b3f6b;
+    background-color: #2980b9;
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.1em;

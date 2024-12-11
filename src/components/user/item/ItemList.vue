@@ -53,18 +53,18 @@ export default {
     data() {
         return {
             items: [
-                {
-                    kode: "2024001",
-                    nama: "Acer Nitro 15 AN515-58",
-                    deskripsi: "Intel Core i5 12500H, RTX 3050, RAM 8GB DDR4, LAYAR 15.6",
-                    stok: 80,
-                },
-                {
-                    kode: "2024002",
-                    nama: "Lenovo LOQ 15 15IRH8",
-                    deskripsi: "Intel Core i5 13450H, RTX 3050, RAM 8GB DDR4, LAYAR 15.6",
-                    stok: 80,
-                },
+                // {
+                //     kode: "2024001",
+                //     nama: "Acer Nitro 15 AN515-58",
+                //     deskripsi: "Intel Core i5 12500H, RTX 3050, RAM 8GB DDR4, LAYAR 15.6",
+                //     stok: 80,
+                // },
+                // {
+                //     kode: "2024002",
+                //     nama: "Lenovo LOQ 15 15IRH8",
+                //     deskripsi: "Intel Core i5 13450H, RTX 3050, RAM 8GB DDR4, LAYAR 15.6",
+                //     stok: 80,
+                // },
             ],
             showForm: false,
             selectedItem: null,
@@ -117,7 +117,7 @@ export default {
 }
 h2 {
     margin-bottom: 20px;
-    color: #4b3f6b;
+    color: #2980b9;
     text-align: center;
     font-size: 24px;
 }
@@ -132,7 +132,7 @@ th,td {
     text-align: center;
 }
 th {
-    background-color: #4b3f6b;
+    background-color: #2980b9;
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.1em;

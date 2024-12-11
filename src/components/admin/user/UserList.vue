@@ -144,11 +144,11 @@ export default {
   margin-bottom: 12px;
 }
 h2 {
-  color: #4b3f6b;
+  color: #2980b9;
   font-size: 24px;
 }
 .add-btn {
-  background-color: #754bc5;
+  background-color: #2980b9;
   color: white;
   padding: 6px 12px;
   border: none;
@@ -157,7 +157,7 @@ h2 {
   font-size: 14px;
 }
 .add-btn:hover {
-  background-color: #5a37a0;
+  background-color: #0056b3;
 }
 .user-cards {
   display: flex;

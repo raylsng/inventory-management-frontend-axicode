@@ -150,7 +150,7 @@ export default {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 .header h2 {
-  color: #4b3f6b;
+  color: #2980b9;
   font-size: 24px;
 }
 .header .btn-primary {

@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar">
         <div class="navbar-brand">
-            <a href="#" class="navbar-item">Simbok</a>
+            <a href="#" class="navbar-item">Axicode</a>
         </div>
         <div class="navbar-menu">
             <div class="navbar-start">

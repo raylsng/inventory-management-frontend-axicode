@@ -83,37 +83,37 @@ export default {
   data() {
     return {
       transactions: [
-        {
-          id: "2024001",
+        // {
+        //   id: "2024001",
 
-          namaUser: "John Doe",
+        //   namaUser: "John Doe",
 
-          namaBarang: "Acer Nitro 15 AN515-58",
+        //   namaBarang: "Acer Nitro 15 AN515-58",
 
-          jumlahPinjam: 1,
+        //   jumlahPinjam: 1,
 
-          tanggalPinjam: "2022-10-10",
+        //   tanggalPinjam: "2022-10-10",
 
-          tanggalPengembalian: "2022-10-17",
+        //   tanggalPengembalian: "2022-10-17",
 
-          status: "Borrowed",
-        },
+        //   status: "Borrowed",
+        // },
 
-        {
-          id: "2024002",
+        // {
+        //   id: "2024002",
 
-          namaUser: "Jane Smith",
+        //   namaUser: "Jane Smith",
 
-          namaBarang: "Lenovo LOQ 15 15IRH8",
+        //   namaBarang: "Lenovo LOQ 15 15IRH8",
 
-          jumlahPinjam: 1,
+        //   jumlahPinjam: 1,
 
-          tanggalPinjam: "2022-10-10",
+        //   tanggalPinjam: "2022-10-10",
 
-          tanggalPengembalian: "2022-10-17",
+        //   tanggalPengembalian: "2022-10-17",
 
-          status: "Borrowed",
-        },
+        //   status: "Borrowed",
+        // },
       ],
 
       showForm: false,
@@ -173,7 +173,7 @@ export default {
 h2 {
   margin-bottom: 20px;
 
-  color: #4b3f6b;
+  color: #2980b9;
 
   text-align: center;
 
@@ -204,7 +204,7 @@ td {
 }
 
 th {
-  background-color: #4b3f6b;
+  background-color: #2980b9;
 
   color: white;
 

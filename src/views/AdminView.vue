@@ -24,7 +24,7 @@
 import ItemList from "@/components/admin/item/ItemList.vue";
 import ItemForm from "@/components/admin/item/ItemForm.vue";
 import UserList from "@/components/admin/user/UserList.vue";
-import TransactionList from "@/components/user/transaction/TransactionList.vue";
+import TransactionList from "@/components/admin/transaction/TransactionList.vue"; //revisi ke @/components/admin
 import Modal from "@/components/Modal.vue";
 
 export default {
