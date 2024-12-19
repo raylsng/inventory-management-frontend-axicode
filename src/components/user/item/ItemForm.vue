@@ -1,98 +1,152 @@
 <template>
   <div>
-    <form @submit.prevent="submitForm">
-      <h2>Peminjaman Barang</h2>
-      <code>{{ form }}</code>
-      <div>
-        <label for="id">Kode Barang:</label>
-        <input type="text" v-model="form.kode" id="id" :disabled="true" />
-      </div>
-
-      <div>
-        <label for="name">Nama Barang:</label>
-        <input type="text" v-model="form.name" id="name" :disabled="true" />
-      </div>
-
-      <div>
-        <label for="description">Deskripsi:</label>
+    <form
+      @submit.prevent="submitForm"
+      class="item-form mb-3 p-3 shadow-sm bg-white rounded"
+    >
+      <div class="mb-3">
+        <label for="id" class="form-label">Kode Barang</label>
         <input
           type="text"
+          v-model="form.id"
+          id="id"
+          :disabled="isEdit"
+          required
+          class="form-control"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="name" class="form-label">Nama Barang</label>
+        <input
+          type="text"
+          v-model="form.name"
+          id="name"
+          class="form-control"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label">Deskripsi</label>
+        <textarea
           v-model="form.description"
           id="description"
-          :disabled="true"
-        />
+          class="form-control"
+          required
+        >
+        </textarea>
       </div>
-      <div>
-        <label for="tanggal_pinjam">Tanggal Pinjam:</label>
+      <div class="mb-3">
+        <label for="stock" class="form-label">Stock</label>
         <input
-          type="date"
-          v-model="form.tanggal_pinjam"
-          id="tanggal_pinjam"
-          :disabled="true"
+          type="number"
+          v-model.number="form.stock"
+          id="stock"
+          class="form-control"
+          required
         />
       </div>
-
-      <div>
-        <label for="tanggal_kembali">Tanggal Kembali:</label>
-        <input
-          type="date"
-          v-model="form.tanggal_kembali"
-          id="tanggal_kembali"
-        />
-      </div>
-
-      <div>
-        <label for="jumlah_pinjam">Jumlah Pinjam:</label>
-        <input type="number" v-model="form.jumlah_pinjam" id="jumlah_pinjam" />
-      </div>
-
-      <div class="button-container">
-        <button type="button" @click="cancelForm">Batal</button>
-        <button type="submit">Ajukan</button>
-      </div>
+      <div v-if="form.error" class="alert alert-danger">{{ form.error }}</div>
+      <button type="submit" class="btn btn-success w-100">
+        {{ isEdit ? "Simpan Perubahan" : "Tambah Barang" }}
+      </button>
     </form>
   </div>
 </template>
 
 <script>
+import { useItemStore } from "@/store/itemStore";
+
 export default {
   props: {
-    item: Object,
-    isEdit: Boolean,
+    item: {
+      type: Object,
+      default: () => ({}),
+    },
+    isEdit: {
+      type: Boolean,
+      default: false,
+    },
   },
-
   data() {
     return {
       form: {
-        kode: this.item.id,
-        name: this.item.name,
-        description: this.item.description,
-        tanggal_pinjam: this.formatDate(new Date()),
-        tanggal_kembali: "",
-        jumlah_pinjam: 1,
+        id: "",
+        name: "",
+        description: "",
+        stock: 0,
+        error: "",
       },
     };
   },
-  methods: {
-    submitForm() {
-      this.$emit("submit", { ...this.form });
-    },
-    cancelForm() {
-      this.$emit("cancel");
-    },
-    formatDate(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+  watch: {
+    item: {
+      immediate: true,
+      handler(newItem) {
+        if (this.isEdit) {
+          this.form = {
+            id: newItem.id,
+            name: newItem.name,
+            description: newItem.description,
+            stock: newItem.stock,
+          };
+        } else {
+          this.resetForm();
+        }
+      },
     },
   },
-  watch: {
-    item(newItem) {
-      if (newItem) {
-        this.form.kode = newItem.kode;
-        this.form.nama = newItem.nama;
-        this.form.deskripsi = newItem.deskripsi;
+  methods: {
+    resetForm() {
+      this.form = {
+        id: "",
+        name: "",
+        description: "",
+        stock: 0,
+        error: "",
+      };
+    },
+    async submitForm() {
+      const itemStore = useItemStore();
+      try {
+        this.form.error = "";
+
+        const payload = {
+          id: this.form.id,
+          name: this.form.name,
+          description: this.form.description,
+          stock: this.form.stock,
+        };
+
+        console.log("Sending data to server:", payload);
+        let response;
+        if (this.isEdit) {
+          response = await itemStore.updateItem({
+            id: this.item.id,
+            ...payload,
+          });
+          console.log("Item updated successfully");
+        } else {
+          response = await itemStore.addItem(payload);
+          console.log("Item created:", response.data);
+        }
+        this.$emit("submit", this.form);
+        this.resetForm();
+      } catch (error) {
+        console.error("Failed to submit form:", error);
+        if (error.response) {
+          console.error("Response Status:", error.response.status);
+          console.error("Response Data:", error.response.data);
+          this.form.error = error.response.data.message || "Unknown error";
+        } else if (error.request) {
+          console.error(
+            "Request made but no response received:",
+            error.request
+          );
+          this.form.error = "Request made but no response received";
+        } else {
+          console.error("Error details:", error.message);
+          this.form.error = error.message || "Failed to submit form";
+        }
       }
     },
   },
@@ -101,55 +155,32 @@ export default {
 
 <style scoped>
 form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 400px;
-  margin: auto;
-  background: #f0f0f0;
-  padding: 20px;
+  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
+.mb-3 {
+  margin-bottom: 1rem;
 }
-
-label {
-  margin-top: 10px;
+.form-label {
+  font-weight: bold;
+  color: #4b3f6b;
 }
-
-input {
-  padding: 5px;
-  margin-top: 5px;
-}
-
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
+.form-control {
   border-radius: 4px;
+  border: 1px solid #ccc;
 }
-
-button:hover {
+.form-control:focus {
+  border-color: #4b3f6b;
+  box-shadow: 0 0 0 0.2rem rgba(75, 63, 107, 0.25);
+}
+.btn-success {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+.btn-success:hover {
   background-color: #45a049;
-}
-
-button[type="button"] {
-  background-color: #f44336;
-}
-
-button[type="button"]:hover {
-  background-color: #e31b0c;
+  border-color: #45a049;
 }
 </style>

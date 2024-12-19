@@ -26,9 +26,9 @@
                 class="form-control form-control-sm"
                 placeholder="Search users..."
               />
-              <button type="submit" class="btn btn-sm btn-outline-primary">
+              <!-- <button type="submit" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-search"></i>
-              </button>
+              </button> -->
             </form>
           </div>
           <!-- table data user -->

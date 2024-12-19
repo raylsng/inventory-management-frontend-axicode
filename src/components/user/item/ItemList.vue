@@ -1,7 +1,15 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid item-list">
     <div class="header d-flex justify-content-between align-items-center mb-4">
       <h2 class="h3">List Material</h2>
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        @click="showAddForm"
+      >
+        <i class="bi bi-plus-circle me-2"></i>
+        Tambah Material
+      </button>
     </div>
     <div class="card shadow">
       <div class="card-body">
@@ -18,36 +26,45 @@
                 class="form-control form-control-sm"
                 placeholder="Search items..."
               />
-              <button type="submit" class="btn btn-sm btn-outline-primary">
+              <!-- <button type="submit" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-search"></i>
-              </button>
+              </button> -->
             </form>
           </div>
-          <!-- table data item -->
+          <!-- table data items -->
           <table class="table table-hover border-top">
             <thead>
               <tr class="table-primary">
-                <th>Kode Barang</th>
                 <th>Nama Barang</th>
                 <th>Deskripsi</th>
                 <th>Stok</th>
-                <th>Aksi</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in filteredItems" :key="item.id">
-                <td>{{ item.id }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.stock }}</td>
-                <td class="action-buttons">
-                  <button
-                    class="btn btn-sm btn-info"
-                    title="Pinjam Barang"
-                    @click="borrowItem(item)"
-                  >
-                    Pinjam
-                  </button>
+                <td>
+                  <div class="btn-group">
+                    <button
+                      @click="editItem(item)"
+                      type="button"
+                      class="btn btn-sm btn-info edit"
+                      title="Edit"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button
+                      @click="HandleDeleteItem(item)"
+                      type="button"
+                      class="delete btn btn-sm btn-danger"
+                      title="Delete"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
               <tr v-if="filteredItems.length === 0">
@@ -65,27 +82,43 @@
           </div> -->
         </div>
       </div>
+      <!-- <div class="row px-5">
+        <ItemCard
+          v-for="item in items"
+          :key="item.id"
+          :item="item"
+          @edit-item="editItem"
+          @delete-item="HandleDeleteItem"
+          class="col-md-6 col-lg-4 mb-4"
+        />
+      </div> -->
+      <Modal :visible="showForm" @close="cancelEditForm">
+        <ItemForm
+          :item="selectedItem"
+          :isEdit="isEdit"
+          @submit="handleSubmit"
+          @cancel="cancelEditForm"
+        />
+      </Modal>
     </div>
   </div>
-  <Modal :visible="showForm" @close="cancelBorrowForm">
-    <ItemForm
-      :item="selectedItem"
-      @submit="handleBorrow"
-      @cancel="cancelBorrowForm"
-    />
-  </Modal>
 </template>
 
 <script>
-import Modal from "@/components/Modal.vue";
-import ItemForm from "@/components/user/item/ItemForm.vue";
-import { EventBus } from "@/utils/EventBus";
+//Import Komponen Custom
+// import ItemCard from "./ItemCard.vue";
+import Modal from "../../Modal.vue";
+import ItemForm from "./ItemForm.vue";
 import { useItemStore } from "@/store/itemStore";
+import { EventBus } from "@/utils/EventBus";
 import { computed, onMounted } from "vue";
+import Swal from "sweetalert2";
 
 export default {
-  name: "ItemListUser",
+  //export komponen custom
+  name: "ItemList",
   components: {
+    // ItemCard,
     Modal,
     ItemForm,
   },
@@ -99,38 +132,110 @@ export default {
     return {
       items,
       itemStore,
+      addItem: itemStore.addItem,
+      updateItem: itemStore.updateItem,
+      deleteItem: itemStore.deleteItem,
     };
   },
   data() {
     return {
       showForm: false,
       selectedItem: null,
+      isEdit: false,
       searchQuery: "",
     };
   },
   computed: {
+    // items() {
+    //   return this.itemStore.items; // mengakses itemsStore dari store pinia
+    // },
     filteredItems() {
-      if (this.searchQuery) {
-        return this.items.filter((item) =>
-          item.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-      }
-      return this.items;
+      return this.items.filter((item) => {
+        const idAsString = String(item.id).toLowerCase();
+        const nameAsString = item.name.toLowerCase();
+        const query = this.searchQuery.toLowerCase();
+
+        return idAsString.includes(query) || nameAsString.includes(query);
+      });
+      // return this.items.filter((item) => {
+      //   item.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      //     item.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      // });
     },
   },
+
   methods: {
-    borrowItem(item) {
-      this.selectedItem = { ...item };
+    showAddForm() {
+      this.selectedItem = { id: 0, name: "", description: "", stock: 0 };
+      this.isEdit = false;
       this.showForm = true;
     },
-    handleBorrow(item) {
-      console.log("Borrow item:", item);
-      // Implementasikan logika peminjaman barang di sini
+
+    editItem(item) {
+      this.selectedItem = { ...item };
+      this.isEdit = true;
+      this.showForm = true;
+    },
+    // notifikasi alert sukses
+    notificationAlert(description) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: description,
+      });
+    },
+
+    async handleSubmit(item) {
+      if (this.isEdit) {
+        await this.itemStore.updateItem(item);
+        this.notificationAlert("Data material berhasil diubah");
+      } else {
+        await this.itemStore.addItem(item);
+        this.notificationAlert("Data material berhasil ditambah");
+      }
+      await this.itemStore.fetchItems();
       this.showForm = false;
     },
-    cancelBorrowForm() {
+    cancelEditForm() {
       this.showForm = false;
-      this.selectedItem = null;
+    },
+
+    async HandleDeleteItem(item) {
+      Swal.fire({
+        title: `Anda yakin ingin hapus data barang ini?`,
+        text: "Data barang ini akan dihapus secara permanen",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, delete aja",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.deleteItem(item.id);
+          Swal.fire({
+            title: "Terhapus!",
+            text: "Datamu telah dihapus",
+            icon: "success",
+          });
+        }
+      });
+      await this.itemStore.fetchItems();
+      // if (window.confirm("Apakah Anda yakin ingin menghapus item ini?")) {
+      //   await this.deleteItem(item.id); // memangil action delete dari store
+      //   this.deleteSuccess = true; // Tampilkan pesan sukses
+      //   setTimeout(() => (this.deleteSuccess = false), 3000); // Hilangkan pesan setelah 3 detik
+      //   await this.itemStore.fetchItems();
+      // }
     },
     handleSearch(query) {
       this.searchQuery = query;
@@ -146,73 +251,34 @@ export default {
 </script>
 
 <style scoped>
-/* .item-list {
-  padding: 16px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-   margin: 8px 0;
+.table > :not(caption) > * > * {
+  vertical-align: middle;
 }
-h2 {
-  margin-bottom: 20px;
+.form-control:focus {
+  box-shadow: none;
+  border-color: #86b7fe;
+}
+.btn-group {
+  gap: 0.25rem;
+}
+/* .item-list {
+  background-color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+.item-list:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+.header h2 {
   color: #2980b9;
-  text-align: center;
   font-size: 24px;
 }
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+.header .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
 }
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 12px 15px;
-  text-align: center;
-}
-th {
-  background-color: #2980b9;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
-}
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-tr:hover {
-  background-color: #ddd;
-}
-.action-column {
-  width: 100px;
-  text-align: center;
-}
-button {
-  padding: 8px 12px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 14px;
-  margin: 0 2px;
-}
-.borrow-btn {
-  background-color: #754bc5;
-  color: white;
-}
-.borrow-btn:hover {
-  background-color: #5a37a0;
-}
-@media (max-width: 600px) {
-  th,
-  td {
-    padding: 8px 10px;
-  }
-  .action-buttons {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.header .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
 } */
 </style>

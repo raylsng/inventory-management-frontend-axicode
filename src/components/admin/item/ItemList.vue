@@ -2,14 +2,14 @@
   <div class="container-fluid item-list">
     <div class="header d-flex justify-content-between align-items-center mb-4">
       <h2 class="h3">List Material</h2>
-      <button
+      <!-- <button
         type="button"
         class="btn btn-outline-primary"
         @click="showAddForm"
       >
         <i class="bi bi-plus-circle me-2"></i>
         Tambah Material
-      </button>
+      </button> -->
     </div>
     <div class="card shadow">
       <div class="card-body">
@@ -24,18 +24,18 @@
                 type="search"
                 v-model="searchQuery"
                 class="form-control form-control-sm"
-                placeholder="Search items..."
+                placeholder="Search Material..."
               />
-              <button type="submit" class="btn btn-sm btn-outline-primary">
+              <!-- <button type="submit" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-search"></i>
-              </button>
+              </button> -->
             </form>
           </div>
           <!-- table data items -->
           <table class="table table-hover border-top">
             <thead>
               <tr class="table-primary">
-                <th>Nama Barang</th>
+                <th>Nama Material</th>
                 <th>Deskripsi</th>
                 <th>Stok</th>
                 <th>Action</th>
@@ -48,7 +48,7 @@
                 <td>{{ item.stock }}</td>
                 <td>
                   <div class="btn-group">
-                    <button
+                    <!-- <button
                       @click="editItem(item)"
                       type="button"
                       class="btn btn-sm btn-info edit"
@@ -56,6 +56,7 @@
                     >
                       <i class="bi bi-pencil"></i>
                     </button>
+
                     <button
                       @click="HandleDeleteItem(item)"
                       type="button"
@@ -63,7 +64,17 @@
                       title="Delete"
                     >
                       <i class="bi bi-trash"></i>
+                    </button> -->
+
+                    <button
+                      @click="orderSpk(order)"
+                      type="button"
+                      class="orderSpk btn btn-sm btn-info"
+                      title="Order SPK"
+                    >
+                      Order
                     </button>
+
                   </div>
                 </td>
               </tr>

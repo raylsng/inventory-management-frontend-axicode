@@ -1,154 +1,169 @@
 <template>
   <div class="transaction-list">
-    <h2>List Data SPK</h2>
+    <h2>List Data SPK </h2>
 
     <div class="table-responsive">
       <table>
         <thead>
           <tr>
             <th>ID</th>
-
-            <th>Nama User</th>
-
+            <th>ID User</th>
             <th>Nama Barang</th>
-
-            <th>Jumlah Pinjam</th>
-
-            <th>Tanggal Pinjam</th>
-
-            <th>Tanggal Pengembalian</th>
-
-            <th>Status</th>
-
+            <th>Jumlah Order</th>
+            <th>Status SPK</th>
+            <th>Order Dibuat</th>
             <th>Aksi</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr v-for="transaction in transactions" :key="transaction.id">
-            <td>{{ transaction.id }}</td>
-
-            <td>{{ transaction.namaUser }}</td>
-
-            <td>{{ transaction.namaBarang }}</td>
-
-            <td>{{ transaction.jumlahPinjam }}</td>
-
-            <td>{{ transaction.tanggalPinjam }}</td>
-
-            <td>{{ transaction.tanggalPengembalian }}</td>
-
-            <td>{{ transaction.status }}</td>
-
-            <td class="action-buttons">
-              <button
-                class="return-btn"
-                @click="openReturnForm(transaction)"
-                :disabled="transaction.status === 'Returned'"
-              >
-                {{
-                  transaction.status === "Returned"
-                    ? "Dikembalikan"
-                    : "Kembalikan"
-                }}
-              </button>
+          <tr v-for="order in orders" :key="order.id">
+            <td>{{ order.id }}</td>
+            <td>{{ order.userId }}</td>
+            <td>{{ order.material?.name }}</td>
+            <td>{{ order.orderQty }}</td>
+            <td>
+              <span class="badge" 
+                    :class="warnaStatus(order.status)">
+                    {{ order.status }}
+              </span>
             </td>
+            <td>{{ order.createdAt }}</td>
+            
+            <td class="action-buttons">
+                <button
+                  @click="buttonVerifyOrder(order)"
+                  type="button"
+                  class="orderSpk action-buttons btn btn-sm btn-info"
+                  title="Order SPK"
+                >
+                  Accept
+                </button>
+            </td>
+
           </tr>
         </tbody>
       </table>
     </div>
 
-    <Modal :visible="showForm" @close="cancelReturnForm">
+    <!-- <Modal :visible="showForm" @close="cancelReturnForm">
       <TransactionForm
         :transaction="selectedTransaction"
         @submit="handleReturn"
         @cancel="cancelReturnForm"
       />
-    </Modal>
+    </Modal> -->
   </div>
 </template>
 
 <script>
+import { computed, onMounted } from "vue";
+import { useOrderStore } from "@/store/orderStore";
+import { useAuthStore } from "@/store/authStore";
+// import OrderForm from "@/components/user/transaction/OrderForm.vue";
 import Modal from "@/components/Modal.vue";
-
-import TransactionForm from "@/components/user/transaction/TransactionForm.vue";
+import { EventBus } from "@/utils/EventBus";
+import Swal from "sweetalert2";
 
 export default {
+  name: "orders",
   components: {
-    Modal,
-
-    TransactionForm,
+    // Modal,
+    // TransactionForm,
   },
+  setup() {
+    const orderStore = useOrderStore();
+    const authStore = useAuthStore();
+    const orders = computed(() => orderStore.orders);
+    onMounted(() => {
+      if (authStore.token) {
+        orderStore.fetchOrders();
+      } else {
+        console.error("Orders is not authenticated");
+      }
+    });
+    return {
+      orders,
+      orderStore,
+      // addItem: itemStore.addItem,
+      // updateItem: itemStore.updateItem,
+      // deleteItem: itemStore.deleteItem,
+    };
+  },
+  
 
   data() {
     return {
-      transactions: [
-        {
-          id: "2024001",
-
-          namaUser: "John Doe",
-
-          namaBarang: "Acer Nitro 15 AN515-58",
-
-          jumlahPinjam: 1,
-
-          tanggalPinjam: "2022-10-10",
-
-          tanggalPengembalian: "2022-10-17",
-
-          status: "Borrowed",
-        },
-
-        {
-          id: "2024002",
-
-          namaUser: "Jane Smith",
-
-          namaBarang: "Lenovo LOQ 15 15IRH8",
-
-          jumlahPinjam: 1,
-
-          tanggalPinjam: "2022-10-10",
-
-          tanggalPengembalian: "2022-10-17",
-
-          status: "Borrowed",
-        },
-      ],
-
+      // orders,
+      // orderStore,
       showForm: false,
-
-      selectedTransaction: null,
+      selectedUser: null,
+      isEdit: false,
+      searchQuery: "",
     };
   },
 
+  computed: {
+    orders() {
+      return this.orderStore.orders; // mengakses itemsStore dari store pinia
+    },
+
+    filteredOrders() {
+      return this.orders.filter((order) => {
+        return (
+          order.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          order.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      });
+    },
+  },
+
   methods: {
-    openReturnForm(transaction) {
-      this.selectedTransaction = { ...transaction };
 
-      this.showForm = true;
-    },
+     // warna status sesuai PENDING, ON_PROCESS, DONE
+    warnaStatus(status) {
+    switch (status) {
+      case 'PENDING':
+        return 'bg-warning';
+      case 'ON_PROCESS':
+        return 'bg-primary';
+      case 'DONE':
+        return 'bg-success';
+      default:
+        return 'bg-warning';
+    }
+  },
 
-    handleReturn(updatedTransaction) {
-      const index = this.transactions.findIndex(
-        (t) => t.id === updatedTransaction.id
-      );
+  buttonVerifyOrder(order) {
+    
+  }
+  
+    // openReturnForm(transaction) {
+    //   this.selectedTransaction = { ...transaction };
 
-      if (index !== -1) {
-        this.transactions[index] = {
-          ...updatedTransaction,
-          status: "Returned",
-        };
-      }
+    //   this.showForm = true;
+    // },
 
-      this.cancelReturnForm();
-    },
+    // handleReturn(updatedTransaction) {
+    //   const index = this.transactions.findIndex(
+    //     (t) => t.id === updatedTransaction.id
+    //   );
 
-    cancelReturnForm() {
-      this.showForm = false;
+    //   if (index !== -1) {
+    //     this.transactions[index] = {
+    //       ...updatedTransaction,
+    //       status: "Returned",
+    //     };
+    //   }
 
-      this.selectedTransaction = null;
-    },
+    //   this.cancelReturnForm();
+    // },
+
+    // cancelReturnForm() {
+    //   this.showForm = false;
+
+    //   this.selectedTransaction = null;
+    // },
   },
 };
 </script>
@@ -233,14 +248,14 @@ button {
   font-size: 14px;
 }
 
-.return-btn {
-  background-color: #754bc5;
+.accept-btn {
+  background-color: #375fa0;
 
   color: white;
 }
 
-.return-btn:hover {
-  background-color: #5a37a0;
+.accept-btn:hover {
+  background-color: #2980b9;
 }
 
 .return-btn[disabled] {
