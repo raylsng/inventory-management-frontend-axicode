@@ -2,51 +2,51 @@
   <div>
     <form
       @submit.prevent="submitForm"
-      class="mb-3 p-3 shadow-sm bg-white rounded"
+      class="item-form mb-3 p-3 shadow-sm bg-white rounded"
     >
       <div class="mb-3">
-        <label for="kode" class="form-label">Kode Barang</label>
+        <label for="id" class="form-label">Kode Barang</label>
         <input
-          type="number"
-          v-model="form.kode"
-          name="kode"
-          id="kode"
+          type="text"
+          v-model="form.id"
+          id="id"
           :disabled="isEdit"
           required
           class="form-control"
         />
       </div>
       <div class="mb-3">
-        <label for="nama" class="form-label">Nama Barang</label>
+        <label for="name" class="form-label">Nama Barang</label>
         <input
           type="text"
-          v-model="form.nama"
-          id="nama"
+          v-model="form.name"
+          id="name"
           class="form-control"
           required
         />
       </div>
       <div class="mb-3">
-        <label for="deskripsi" class="form-label">Deskripsi</label>
-        <input
-          type="text"
-          v-model="form.deskripsi"
-          id="deskripsi"
+        <label for="description" class="form-label">Deskripsi</label>
+        <textarea
+          v-model="form.description"
+          id="description"
           class="form-control"
           required
-        />
+        >
+        </textarea>
       </div>
       <div class="mb-3">
-        <label for="stok" class="form-label">Stok</label>
+        <label for="stock" class="form-label">Stock</label>
         <input
           type="number"
-          v-model="form.stok"
-          id="stok"
+          v-model.number="form.stock"
+          id="stock"
           class="form-control"
           required
         />
       </div>
-      <button type="submit" class="btn btn-success">
+      <div v-if="form.error" class="alert alert-danger">{{ form.error }}</div>
+      <button type="submit" class="btn btn-success w-100">
         {{ isEdit ? "Simpan Perubahan" : "Tambah Barang" }}
       </button>
     </form>
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import { useItemStore } from "@/store/itemStore";
+
 export default {
   props: {
     item: {
@@ -68,10 +70,11 @@ export default {
   data() {
     return {
       form: {
-        kode: "",
-        nama: "",
-        deskripsi: "",
-        stok: 0,
+        id: "",
+        name: "",
+        description: "",
+        stock: 0,
+        error: "",
       },
     };
   },
@@ -80,32 +83,73 @@ export default {
       immediate: true,
       handler(newItem) {
         if (this.isEdit) {
-          this.form = { ...newItem };
-        } else {
           this.form = {
-            kode: "",
-            nama: "",
-            deskripsi: "",
-            stok: 0,
+            id: newItem.id,
+            name: newItem.name,
+            description: newItem.description,
+            stock: newItem.stock,
           };
+        } else {
+          this.resetForm();
         }
       },
     },
   },
   methods: {
-    submitForm() {
-      if (
-        this.form.kode &&
-        this.form.nama &&
-        this.form.deskripsi &&
-        this.form.stok !== null &&
-        this.form.stok !== undefined
-      ) {
+    resetForm() {
+      this.form = {
+        id: "",
+        name: "",
+        description: "",
+        stock: 0,
+        error: "",
+      };
+    },
+    async submitForm() {
+      const itemStore = useItemStore();
+      try {
+        this.form.error = "";
+
+        const payload = {
+          id: this.form.id,
+          name: this.form.name,
+          description: this.form.description,
+          stock: this.form.stock,
+        };
+
+        console.log("Sending data to server:", payload);
+        let response;
+        if (this.isEdit) {
+          response = await itemStore.updateItem({
+            id: this.item.id,
+            ...payload,
+          });
+          console.log("Item updated successfully");
+        } else {
+          response = await itemStore.addItem(payload);
+          console.log("Item created:", response.data);
+        }
         this.$emit("submit", this.form);
+        this.resetForm();
+      } catch (error) {
+        console.error("Failed to submit form:", error);
+        if (error.response) {
+          console.error("Response Status:", error.response.status);
+          console.error("Response Data:", error.response.data);
+          this.form.error = error.response.data.message || "Unknown error";
+        } else if (error.request) {
+          console.error(
+            "Request made but no response received:",
+            error.request
+          );
+          this.form.error = "Request made but no response received";
+        } else {
+          console.error("Error details:", error.message);
+          this.form.error = error.message || "Failed to submit form";
+        }
       }
     },
   },
-  emits: ["submit"],
 };
 </script>
 

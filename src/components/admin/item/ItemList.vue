@@ -1,87 +1,172 @@
 <template>
-  <div class="item-list container my-5 bg-white rounded">
-    <div
-      v-if="deleteSuccess"
-      class="alert alert-success alert-dismissible fade show"
-      role="alert"
-    >
-      Item berhasil dihapus.
+  <div class="container-fluid item-list">
+    <div class="header d-flex justify-content-between align-items-center mb-4">
+      <h2 class="h3">List Material</h2>
       <button
         type="button"
-        class="btn-close"
-        @click="deleteSuccess = false"
-        aria-label="Close"
-      ></button>
-    </div>
-    <div class="header d-flex justify-content-between align-items-center mb-3">
-      <h2 class="mt-2">List Data Material</h2>
-      <button class="btn btn-primary mt-2" @click="showAddForm">
+        class="btn btn-outline-primary"
+        @click="showAddForm"
+      >
+        <i class="bi bi-plus-circle me-2"></i>
         Tambah Material
       </button>
     </div>
-    <div class="row px-5">
-      <ItemCard
-        v-for="item in items"
-        :key="item.kode"
-        :item="item"
-        @edit-item="editItem"
-        @delete-item="deleteItem"
-        class="col-md-6 col-lg-4 mb-4"
-      />
+    <div class="card shadow">
+      <div class="card-body">
+        <div class="table-responsive">
+          <!-- search -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <form
+              @submit.prevent="handleSearch"
+              class="d-flex align-items-center"
+            >
+              <input
+                type="search"
+                v-model="searchQuery"
+                class="form-control form-control-sm"
+                placeholder="Search items..."
+              />
+              <button type="submit" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-search"></i>
+              </button>
+            </form>
+          </div>
+          <!-- table data items -->
+          <table class="table table-hover border-top">
+            <thead>
+              <tr class="table-primary">
+                <th>Nama Barang</th>
+                <th>Deskripsi</th>
+                <th>Stok</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in filteredItems" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.stock }}</td>
+                <td>
+                  <div class="btn-group">
+                    <button
+                      @click="editItem(item)"
+                      type="button"
+                      class="btn btn-sm btn-info edit"
+                      title="Edit"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button
+                      @click="HandleDeleteItem(item)"
+                      type="button"
+                      class="delete btn btn-sm btn-danger"
+                      title="Delete"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="filteredItems.length === 0">
+                <td colspan="4" class="text-center text-muted">
+                  Tidak ada data item
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- pagination -->
+          <!-- <div
+            class="mt-4 d-flex justify-content-between align-items-center border-top"
+          >
+            <div class="text-muted small">Showing to of users</div>
+          </div> -->
+        </div>
+      </div>
+      <!-- <div class="row px-5">
+        <ItemCard
+          v-for="item in items"
+          :key="item.id"
+          :item="item"
+          @edit-item="editItem"
+          @delete-item="HandleDeleteItem"
+          class="col-md-6 col-lg-4 mb-4"
+        />
+      </div> -->
+      <Modal :visible="showForm" @close="cancelEditForm">
+        <ItemForm
+          :item="selectedItem"
+          :isEdit="isEdit"
+          @submit="handleSubmit"
+          @cancel="cancelEditForm"
+        />
+      </Modal>
     </div>
-    <Modal :visible="showForm" @close="cancelEditForm">
-      <ItemForm
-        :item="selectedItem"
-        :isEdit="isEdit"
-        @submit="handleSubmit"
-        @cancel="cancelEditForm"
-      />
-    </Modal>
   </div>
 </template>
 
 <script>
 //Import Komponen Custom
-import ItemCard from "./ItemCard.vue";
+// import ItemCard from "./ItemCard.vue";
 import Modal from "../../Modal.vue";
 import ItemForm from "./ItemForm.vue";
 import { useItemStore } from "@/store/itemStore";
 import { EventBus } from "@/utils/EventBus";
+import { computed, onMounted } from "vue";
+import Swal from "sweetalert2";
 
 export default {
   //export komponen custom
+  name: "ItemList",
   components: {
-    ItemCard,
+    // ItemCard,
     Modal,
     ItemForm,
   },
+  setup() {
+    const itemStore = useItemStore();
+    const items = computed(() => itemStore.items);
 
+    onMounted(() => {
+      itemStore.fetchItems();
+    });
+    return {
+      items,
+      itemStore,
+      addItem: itemStore.addItem,
+      updateItem: itemStore.updateItem,
+      deleteItem: itemStore.deleteItem,
+    };
+  },
   data() {
     return {
-      items: [],
       showForm: false,
       selectedItem: null,
       isEdit: false,
-      deleteSuccess: false,
+      searchQuery: "",
     };
   },
   computed: {
-    items() {
-      return this.itemStore.items; // mengakses itemsStore dari store pinia
-    },
+    // items() {
+    //   return this.itemStore.items; // mengakses itemsStore dari store pinia
+    // },
     filteredItems() {
       return this.items.filter((item) => {
-        return (
-          item.kode.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-          item.nama.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+        const idAsString = String(item.id).toLowerCase();
+        const nameAsString = item.name.toLowerCase();
+        const query = this.searchQuery.toLowerCase();
+
+        return idAsString.includes(query) || nameAsString.includes(query);
       });
+      // return this.items.filter((item) => {
+      //   item.id.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      //     item.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      // });
     },
   },
 
   methods: {
     showAddForm() {
-      this.selectedItem = { kode: "", nama: "", deskripsi: "", stok: 0 };
+      this.selectedItem = { id: 0, name: "", description: "", stock: 0 };
       this.isEdit = false;
       this.showForm = true;
     },
@@ -91,37 +176,66 @@ export default {
       this.isEdit = true;
       this.showForm = true;
     },
-
-    handleSubmit(item) {
-      if (
-        item.kode &&
-        item.nama &&
-        item.deskripsi &&
-        item.stok !== null &&
-        !isNaN(item.stok)
-      ) {
-        if (this.isEdit) {
-          this.itemStore.updateItem(item); // memanggil action update item dari store
-        } else {
-          this.itemStore.addItem(item); // memanggil action add item dari store
-        }
-      }
-
-      this.showForm = false;
+    // notifikasi alert sukses
+    notificationAlert(description) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: description,
+      });
     },
 
+    async handleSubmit(item) {
+      if (this.isEdit) {
+        await this.itemStore.updateItem(item);
+        this.notificationAlert("Data material berhasil diubah");
+      } else {
+        await this.itemStore.addItem(item);
+        this.notificationAlert("Data material berhasil ditambah");
+      }
+      await this.itemStore.fetchItems();
+      this.showForm = false;
+    },
     cancelEditForm() {
       this.showForm = false;
-      this.selectedItem = null; //text lms rev =
-      this.isEdit = false; //text lms rev =
     },
 
-    deleteItem(kode) {
-      if (window.confirm("Apakah Anda yakin ingin menghapus item ini?")) {
-        this.itemStore.deleteItem(kode); // memangil action delete dari store
-        this.deleteSuccess = true; // Tampilkan pesan sukses
-        setTimeout(() => (this.deleteSuccess = false), 3000); // Hilangkan pesan setelah 3 detik
-      }
+    async HandleDeleteItem(item) {
+      Swal.fire({
+        title: `Anda yakin ingin hapus data barang ini?`,
+        text: "Data barang ini akan dihapus secara permanen",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, delete aja",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.deleteItem(item.id);
+          Swal.fire({
+            title: "Terhapus!",
+            text: "Datamu telah dihapus",
+            icon: "success",
+          });
+        }
+      });
+      await this.itemStore.fetchItems();
+      // if (window.confirm("Apakah Anda yakin ingin menghapus item ini?")) {
+      //   await this.deleteItem(item.id); // memangil action delete dari store
+      //   this.deleteSuccess = true; // Tampilkan pesan sukses
+      //   setTimeout(() => (this.deleteSuccess = false), 3000); // Hilangkan pesan setelah 3 detik
+      //   await this.itemStore.fetchItems();
+      // }
     },
     handleSearch(query) {
       this.searchQuery = query;
@@ -133,15 +247,21 @@ export default {
   beforeUnmount() {
     EventBus.off("search", this.handleSearch);
   },
-  setup() {
-    const itemStore = useItemStore();
-    return { itemStore };
-  },
 };
 </script>
 
 <style scoped>
-.item-list {
+.table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+.form-control:focus {
+  box-shadow: none;
+  border-color: #86b7fe;
+}
+.btn-group {
+  gap: 0.25rem;
+}
+/* .item-list {
   background-color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
   transition: 0.3s;
@@ -160,5 +280,5 @@ export default {
 .header .btn-primary:hover {
   background-color: #0056b3;
   border-color: #0056b3;
-}
+} */
 </style>

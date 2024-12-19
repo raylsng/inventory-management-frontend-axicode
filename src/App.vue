@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @click="handleClickOutside">
     <Header
       v-if="showHeader"
       :currentRole="currentRole"
@@ -14,11 +14,15 @@
         :currentRole="currentRole"
         :isSidebarVisible="isSidebarVisible"
         @showComponent="navigateTo"
+        ref="sidebarRef"
       />
       <!-- menambahkan && showSidebar  -->
+      <!-- alhamdulillah -->
       <div
         class="main-content"
-        :class="{ expanded: isSidebarVisible && showSidebar }"
+        :class="{
+          expanded: !isSidebarVisible && toggleSidebar && showSidebar,
+        }"
       >
         <!-- mengganti yang awalnya manual dengan router view -->
         <router-view
@@ -42,7 +46,7 @@ export default {
     // mengganti url search param dengan router
     return {
       currentRole: this.$route.name || "phOperator",
-      isSidebarVisible: true,
+      isSidebarVisible: false,
       searchTerm: "",
     };
   },
@@ -86,6 +90,27 @@ export default {
         console.log("Search in user items"); //merubah currentRole dari admin ke whOperator
       }
     },
+    handleClickOutside(event) {
+      if (window.innerWidth < 992) {
+        // if (this.isSidebarVisible) {
+        const sidebar = this.$refs.sidebarRef;
+        const toggleButton = this.$el.querySelector(".toggle-btn");
+        // const header = this.$el.querySelector("header");
+
+        if (
+          this.isSidebarVisible &&
+          sidebar &&
+          // header &&
+          !sidebar.$el.contains(event.target) &&
+          (!toggleButton || !toggleButton.contains(event.target))
+          // event.target !== header &&
+          // !header.contains(event.target)
+        ) {
+          this.isSidebarVisible = false;
+        }
+      }
+    },
+    // },
   },
   mounted() {
     EventBus.on("search", this.handleSearch);
@@ -101,22 +126,22 @@ html,
 body {
   height: 100%;
   margin: 0;
-  background-color: #2980b9;
 }
 #app {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background-color: #f5f6fa;
 }
 .app-content {
   display: flex;
   /* height: 100%; */
   flex-grow: 1;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font: 1em sans-serif;
+  /* font-family: Avenir, Helvetica, Arial, sans-serif;
+  font: 1em sans-serif; */
   height: calc(100vh - 60px);
-  margin-top: 60px;
-  background-color: #2980b9;
+  /* margin-top: 60px; */
+  background-color: #f5f6fa;
 }
 .main-content {
   flex: 1;
@@ -125,23 +150,24 @@ body {
   transition: margin-left 0.3s ease;
 }
 .main-content.expanded {
-  margin-left: 200px;
+  /* width: calc(100% - 255px); */
+  margin-left: 250px;
 }
 
 .app-content.noHeader {
   margin-top: 0;
   height: 100vh;
 }
-/* 
-@media (max-width: 768px) {
-  .main-content {
+
+@media (max-width: 992px) {
+  .main-content.expanded {
     margin-left: 0;
-    margin-top: 180px;
+
+    /* margin-top: 180px; */
   }
   .app-content.noHeader {
     margin-top: 0;
     height: calc(100vh - 60px);
   }
-
-} */
+}
 </style>

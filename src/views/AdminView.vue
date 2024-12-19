@@ -1,6 +1,7 @@
 <template>
   <div class="admin-view">
     <div class="scrollable-content">
+      <DashboardLayout v-if="currentComponent === 'dashboard'" />
       <ItemList
         v-if="currentComponent === 'items'"
         @edit-item="showEditForm"
@@ -8,6 +9,7 @@
       />
       <UserList v-if="currentComponent === 'users'" />
       <TransactionList v-if="currentComponent === 'transactions'" />
+      <HistoryList v-if="currentComponent === 'history'" />
     </div>
     <Modal
       v-if="showForm"
@@ -26,6 +28,8 @@ import ItemForm from "@/components/admin/item/ItemForm.vue";
 import UserList from "@/components/admin/user/UserList.vue";
 import TransactionList from "@/components/admin/transaction/TransactionList.vue"; //revisi ke @/components/admin
 import Modal from "@/components/Modal.vue";
+import HistoryList from "@/components/admin/history/HistoryList.vue";
+import DashboardLayout from "@/components/admin/dashboard/DashboardLayout.vue";
 
 export default {
   components: {
@@ -34,6 +38,8 @@ export default {
     UserList,
     TransactionList,
     Modal,
+    HistoryList,
+    DashboardLayout,
   },
   props: {
     currentComponent: {
@@ -86,7 +92,7 @@ export default {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: #f5f6fa;
   max-height: calc(100vh - 60px);
 }
 </style>

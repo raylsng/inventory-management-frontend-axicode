@@ -3,9 +3,9 @@
   <div class="container">
     <div class="item-card card shadow-sm bg-secondary-subtle">
       <div class="card-body">
-        <h3 class="card-title">{{ item.nama }}</h3>
-        <p class="card-text">{{ item.deskripsi }}</p>
-        <p class="card-text stock">Stok: {{ item.stok }}</p>
+        <h3 class="card-title">{{ item.name }}</h3>
+        <p class="card-text">{{ item.description }}</p>
+        <p class="card-text stock">Stok: {{ item.stock }}</p>
         <div class="buttons d-flex gap-2 mt-3">
           <button
             @click="$emit('edit-item', item)"
@@ -14,7 +14,7 @@
             Edit
           </button>
           <button
-            @click="$emit('delete-item', item.kode)"
+            @click="$emit('delete-item', item.id)"
             class="btn btn-danger delete"
           >
             Delete

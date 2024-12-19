@@ -1,6 +1,67 @@
 <template>
-  <div class="user-card">
-    <h3>{{ user.username }}</h3>
+  <div class="card shadow user-card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <!-- search -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <form action="" method="get" class="d-flex align-items-center">
+            <input
+              type="search"
+              name="search"
+              class="form-control form-control-sm"
+              placeholder="Search users..."
+              value=""
+            />
+            <button type="submit" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-search"></i>
+            </button>
+          </form>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.role }}</td>
+              <td>
+                <div class="btn-group">
+                  <button
+                    @click="$emit('edit-user', user)"
+                    type="button"
+                    class="btn btn-sm btn-info edit"
+                    title="Edit"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button
+                    @click="$emit('delete-user', user.id)"
+                    type="button"
+                    class="delete btn btn-sm btn-danger"
+                    title="Delete"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- pagination -->
+        <div class="mt-4 d-flex justify-content-between align-items-center">
+          <div class="text-muted small">Showing to of products</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <h3>{{ user.username }}</h3>
     <p>Email: {{ user.email }}</p>
     <p class="role">Role: {{ user.role }}</p>
     <div class="buttons">
@@ -8,8 +69,7 @@
       <button @click="$emit('delete-user', user.id)" class="delete">
         Delete
       </button>
-    </div>
-  </div>
+    </div> -->
 </template>
 
 <script>
@@ -25,7 +85,7 @@ export default {
 </script>
 
 <style scoped>
-.user-card {
+/* .user-card {
   border: 1px solid #ddd;
   padding: 16px;
   margin-bottom: 10px;
@@ -75,5 +135,5 @@ export default {
 }
 .user-card button.delete:hover {
   background-color: #c0392b;
-}
+} */
 </style>
