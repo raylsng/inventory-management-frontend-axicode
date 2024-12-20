@@ -34,9 +34,9 @@
                 @click="buttonrReceiveOrder(order)" 
                 type="button"
                 class="orderSpk action-buttons btn btn-sm btn-info"
-                :disabled="order.status === 'PENDING' || order.status === 'DONE'" 
-                title="Accept Order SPK">
-                Accept
+                :disabled="order.status !== 'ON_PROCESS'" 
+                title="Received Order SPK">
+                Receive
               </button>
             </td>
 
@@ -130,21 +130,51 @@ export default {
     }
   },
 
-  buttonrReceiveOrder(order) {
-    // Validasi status sebelum melakukan aksi
-    if (order.status === "PENDING" || order.status === "DONE") {
-      Swal.fire({
-        icon: "error",
-        title: "Anda tidak bisa Receive Order SPK ini",
-        text: `Order SPK ini sudah pada status ${order.status} !`,
-      });
-      return;
-    }
+  // PH ganti status Order Received
+  async buttonrReceiveOrder(order) {
+      // Validasi status sebelum melakukan aksi
+      if (order.status !== "ON_PROCESS" ) {
+        Swal.fire({
+          icon: "error",
+          title: "Tidak dapat Receive order",
+          text: `Status Order SPK ini ${order.status} !`,
+        });
+        return;
+      }
 
-    // Lanjutkan dengan logika jika status valid
-    console.log("Button PH Receive order:", order);
-    // Panggil API atau logic lainnya di sini
-  },
+      // sweet alert untuk konfirmasi PH Received order
+      const confirm = await Swal.fire({
+        icon: "warning",
+        title: "Apakah Anda yakin?",
+        text: "Order ini akan Diselesaikan dan status menjadi DONE",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Lanjutkan",
+        cancelButtonText: "Batal",
+      });
+
+      if (confirm.isConfirmed) {
+        try {
+          // Panggil method dari store untuk memperbarui status
+          const updatedOrder = { ...order, status: "DONE" };
+          await this.orderStore.receiveOrder(updatedOrder);
+
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Order berhasil diperbarui ke DONE.",
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Receive Gagal",
+            text: "Terjadi kesalahan saat memperbarui status order ke DONE.",
+          });
+          console.error("Failed to update order status:", error);
+        }
+      }
+    },
+
+
 
     // openReturnForm(transaction) {
     //   this.selectedTransaction = { ...transaction };

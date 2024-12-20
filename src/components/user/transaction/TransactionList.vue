@@ -33,8 +33,8 @@
               <button 
                 @click="buttonVerifyOrder(order)" 
                 type="button"
-                class="orderSpk action-buttons btn btn-sm btn-info"
-                :disabled="order.status === 'ON_PROCESS' || order.status === 'DONE'" 
+                class="orderSpk action-buttons btn btn-sm btn-success"
+                :disabled="order.status !== 'PENDING'" 
                 title="Accept Order SPK">
                 Accept
               </button>
@@ -122,65 +122,78 @@ export default {
 
      // warna status sesuai PENDING, ON_PROCESS, DONE
     warnaStatus(status) {
-    switch (status) {
-      case 'PENDING':
-        return 'bg-warning';
-      case 'ON_PROCESS':
-        return 'bg-primary';
-      case 'DONE':
-        return 'bg-success';
-      default:
-        return 'bg-warning';
-    }
-  },
+      switch (status) {
+        case 'PENDING':
+          return 'bg-warning';
+        case 'ON_PROCESS':
+          return 'bg-primary';
+        case 'DONE':
+          return 'bg-success';
+        default:
+          return 'bg-warning';
+      }
+    },
 
-//   buttonVerifyOrder(order) {
-//   console.log("Pressed Button Verify Order", order);
-//   // Implementasi logic untuk verify order
-// }
 
-buttonVerifyOrder(order) {
-    // Validasi status sebelum melakukan aksi
-    if (order.status === "ON_PROCESS" || order.status === "DONE") {
-      Swal.fire({
-        icon: "error",
-        title: "Anda tidak bisa Accept Order SPK ini",
-        text: `Order SPK ini sudah pada status ${order.status} !`,
-      });
-      return;
-    }
-
-    // Lanjutkan dengan logika jika status valid
-    console.log("Button WH Accept order:", order);
-    // Panggil API atau logic lainnya di sini
-  },
-  
-    // openReturnForm(transaction) {
-    //   this.selectedTransaction = { ...transaction };
-
-    //   this.showForm = true;
-    // },
-
-    // handleReturn(updatedTransaction) {
-    //   const index = this.transactions.findIndex(
-    //     (t) => t.id === updatedTransaction.id
-    //   );
-
-    //   if (index !== -1) {
-    //     this.transactions[index] = {
-    //       ...updatedTransaction,
-    //       status: "Returned",
-    //     };
+    // buttonVerifyOrder(order) {
+    //   // Validasi status sebelum melakukan aksi
+    //   if (order.status === "ON_PROCESS" || order.status === "DONE") {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: "Anda tidak bisa Accept Order SPK ini",
+    //       text: `Order SPK ini sudah pada status ${order.status} !`,
+    //     });
+    //     return;
     //   }
 
-    //   this.cancelReturnForm();
+    //   // Lanjutkan dengan logika jika status valid
+    //   console.log("Button WH Accept order:", order);
+    //   // Panggil API atau logic lainnya di sini
     // },
 
-    // cancelReturnForm() {
-    //   this.showForm = false;
+    async buttonVerifyOrder(order) {
+      // Validasi status sebelum melakukan aksi
+      if (order.status !== "PENDING") {
+        Swal.fire({
+          icon: "error",
+          title: "Tidak dapat menerima order",
+          text: `Order SPK ini sudah pada status ${order.status}!`,
+        });
+        return;
+      }
 
-    //   this.selectedTransaction = null;
-    // },
+      // sweet alert untuk konfirmasi WH Accept order
+      const confirm = await Swal.fire({
+        icon: "warning",
+        title: "Apakah Anda yakin?",
+        text: "Order ini akan diubah ke status ON_PROCESS.",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Lanjutkan",
+        cancelButtonText: "Batal",
+      });
+
+      if (confirm.isConfirmed) {
+        try {
+          // Panggil method dari store untuk memperbarui status
+          const updatedOrder = { ...order, status: "ON_PROCESS" };
+          await this.orderStore.verifyOrder(updatedOrder);
+
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Order berhasil diperbarui ke ON_PROCESS.",
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Verify Gagal",
+            text: "Terjadi kesalahan saat memperbarui status order ke ON_PROCESS.",
+          });
+          console.error("Failed to update order status:", error);
+        }
+      }
+    },
+    
   },
 };
 </script>

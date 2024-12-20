@@ -6,7 +6,7 @@ export const useOrderStore = defineStore("orderStore", {
     orders: [],
   }),
 
-// Fetch all orders
+  // Fetch all orders
   actions: {
     async fetchOrders() {
       try {
@@ -28,16 +28,39 @@ export const useOrderStore = defineStore("orderStore", {
       }
     },
 
-    //update order status to pending
+    //PATCH order status ke PENDING
     async verifyOrder(order) {
       try {
-        const response = await apiClient.patch(`/orders/${order.id}`, order);
+        const response = await apiClient.patch(
+          `/orders/verify/${order.id}`,
+          order
+        );
         const index = this.orders.findIndex((o) => o.orderId === order.id);
         if (index !== -1) {
           this.orders.splice(index, 1, response.data);
         }
+        return response.data; //nambah ini
       } catch (error) {
         console.error("Failed to update order:", error.message);
+        throw error; //nambah ini
+      }
+    },
+
+    //PATCH order status ke PENDING
+    async receiveOrder(order) {
+      try {
+        const response = await apiClient.patch(
+          `/orders/received/${order.id}`,
+          order
+        );
+        const index = this.orders.findIndex((o) => o.orderId === order.id);
+        if (index !== -1) {
+          this.orders.splice(index, 1, response.data);
+        }
+        return response.data; //nambah ini
+      } catch (error) {
+        console.error("Failed to update order:", error.message);
+        throw error; //nambah ini
       }
     },
 
@@ -50,5 +73,5 @@ export const useOrderStore = defineStore("orderStore", {
       }
     },
   },
-      persist: true, // mengaktifkan persistensi state
+  persist: true, // mengaktifkan persistensi state
 });
