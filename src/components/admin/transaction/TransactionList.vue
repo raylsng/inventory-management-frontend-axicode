@@ -30,14 +30,14 @@
             <td>{{ order.createdAt }}</td>
 
             <td class="action-buttons">
-                <button
-                  @click="buttonReceivedOrder(order)"
-                  type="button"
-                  class="orderSpk action-buttons btn btn-sm btn-info"
-                  title="Order SPK"
-                >
-                  Received
-                </button>
+              <button 
+                @click="buttonrReceiveOrder(order)" 
+                type="button"
+                class="orderSpk action-buttons btn btn-sm btn-info"
+                :disabled="order.status === 'PENDING' || order.status === 'DONE'" 
+                title="Accept Order SPK">
+                Accept
+              </button>
             </td>
 
           </tr>
@@ -130,9 +130,21 @@ export default {
     }
   },
 
-  buttonReceivedOrder(order) {
-    
-  }
+  buttonrReceiveOrder(order) {
+    // Validasi status sebelum melakukan aksi
+    if (order.status === "PENDING" || order.status === "DONE") {
+      Swal.fire({
+        icon: "error",
+        title: "Anda tidak bisa Receive Order SPK ini",
+        text: `Order SPK ini sudah pada status ${order.status} !`,
+      });
+      return;
+    }
+
+    // Lanjutkan dengan logika jika status valid
+    console.log("Button PH Receive order:", order);
+    // Panggil API atau logic lainnya di sini
+  },
 
     // openReturnForm(transaction) {
     //   this.selectedTransaction = { ...transaction };
@@ -229,5 +241,10 @@ button {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 </style>

@@ -23,23 +23,23 @@
             <td>{{ order.material?.name }}</td>
             <td>{{ order.orderQty }}</td>
             <td>
-              <span class="badge" 
-                    :class="warnaStatus(order.status)">
-                    {{ order.status }}
+              <span class="badge" :class="warnaStatus(order.status)">
+                {{ order.status }}
               </span>
             </td>
             <td>{{ order.createdAt }}</td>
-            
+
             <td class="action-buttons">
-                <button
-                  @click="buttonVerifyOrder(order)"
-                  type="button"
-                  class="orderSpk action-buttons btn btn-sm btn-info"
-                  title="Order SPK"
-                >
-                  Accept
-                </button>
+              <button 
+                @click="buttonVerifyOrder(order)" 
+                type="button"
+                class="orderSpk action-buttons btn btn-sm btn-info"
+                :disabled="order.status === 'ON_PROCESS' || order.status === 'DONE'" 
+                title="Accept Order SPK">
+                Accept
+              </button>
             </td>
+
 
           </tr>
         </tbody>
@@ -134,9 +134,26 @@ export default {
     }
   },
 
-  buttonVerifyOrder(order) {
-    
-  }
+//   buttonVerifyOrder(order) {
+//   console.log("Pressed Button Verify Order", order);
+//   // Implementasi logic untuk verify order
+// }
+
+buttonVerifyOrder(order) {
+    // Validasi status sebelum melakukan aksi
+    if (order.status === "ON_PROCESS" || order.status === "DONE") {
+      Swal.fire({
+        icon: "error",
+        title: "Anda tidak bisa Accept Order SPK ini",
+        text: `Order SPK ini sudah pada status ${order.status} !`,
+      });
+      return;
+    }
+
+    // Lanjutkan dengan logika jika status valid
+    console.log("Button WH Accept order:", order);
+    // Panggil API atau logic lainnya di sini
+  },
   
     // openReturnForm(transaction) {
     //   this.selectedTransaction = { ...transaction };
@@ -263,6 +280,13 @@ button {
 
   cursor: not-allowed;
 }
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+
 
 @media (max-width: 600px) {
   th,
