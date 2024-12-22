@@ -35,6 +35,7 @@
           <table class="table table-hover border-top">
             <thead>
               <tr class="table-primary">
+                <th>User ID</th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -43,6 +44,7 @@
             </thead>
             <tbody>
               <tr v-for="user in filteredUsers" :key="user.id">
+                <td>{{ user.id }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.role }}</td>

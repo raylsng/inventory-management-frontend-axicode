@@ -6,8 +6,8 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>ID User</th>
+            <th>ID SPK</th>
+            <th>ID PH</th>
             <th>Nama Barang</th>
             <th>Jumlah Order</th>
             <th>Status SPK</th>

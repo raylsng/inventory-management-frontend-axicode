@@ -38,7 +38,7 @@
                 <th>Nama Material</th>
                 <th>Deskripsi</th>
                 <th>Stok</th>
-                <th>Action</th>
+                <!-- <th>Action</th> -->
               </tr>
             </thead>
             <tbody>
@@ -46,9 +46,9 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.stock }}</td>
-                <td>
+                <!-- <td>
                   <div class="btn-group">
-                    <!-- <button
+                    <button
                       @click="editItem(item)"
                       type="button"
                       class="btn btn-sm btn-info edit"
@@ -64,7 +64,7 @@
                       title="Delete"
                     >
                       <i class="bi bi-trash"></i>
-                    </button> -->
+                    </button>
 
                     <button
                       @click="orderSpk(order)"
@@ -76,7 +76,7 @@
                     </button>
 
                   </div>
-                </td>
+                </td> -->
               </tr>
               <tr v-if="filteredItems.length === 0">
                 <td colspan="4" class="text-center text-muted">

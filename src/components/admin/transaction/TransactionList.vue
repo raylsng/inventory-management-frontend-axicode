@@ -5,8 +5,8 @@
       <table class="table table-hover">
         <thead class="table-primary">
           <tr>
-            <th>ID</th>
-            <th>ID User</th>
+            <th>ID SPK</th>
+            <th>ID PH</th>
             <th>Nama Barang</th>
             <th>Jumlah Order</th>
             <th>Status SPK</th>
@@ -216,7 +216,7 @@ h2 {
   text-align: center;
   font-size: 24px;
 }
-/* .table-responsive {
+.table-responsive {
   width: 100%;
   overflow-x: auto;
 }
@@ -242,7 +242,7 @@ tr:nth-child(even) {
 }
 tr:hover {
   background-color: #ddd;
-} */
+}
 button {
   padding: 8px 12px;
   border: none;
@@ -250,6 +250,8 @@ button {
   border-radius: 4px;
   font-size: 14px;
 }
+
+/*
 .return-btn {
   background-color: #754bc5;
   color: white;
@@ -277,4 +279,6 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
+*/
+
 </style>

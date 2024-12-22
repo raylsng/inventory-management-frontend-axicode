@@ -4,7 +4,7 @@
       @submit.prevent="submitForm"
       class="item-form mb-3 p-3 shadow-sm bg-white rounded"
     >
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <label for="id" class="form-label">Kode Barang</label>
         <input
           type="text"
@@ -14,7 +14,7 @@
           required
           class="form-control"
         />
-      </div>
+      </div> -->
       <div class="mb-3">
         <label for="name" class="form-label">Nama Barang</label>
         <input

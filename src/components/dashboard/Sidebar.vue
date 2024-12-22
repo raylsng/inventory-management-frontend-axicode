@@ -28,7 +28,7 @@
       <!-- Navigation -->
       <nav class="flex-grow-1 px-3 py-4 overflow-auto">
         <div class="nav flex-column gap-1">
-          <a
+          <!-- <a
             v-if="currentRole === 'admin'"
             :class="{ 'active-nav': activeComponent === 'dashboard' }"
             href="#"
@@ -37,7 +37,7 @@
           >
             <i class="bi bi-grid-1x2-fill"></i>
             <span class="">Dashboard</span>
-          </a>
+          </a> -->
 
           <div class="mt-4" v-if="currentRole === 'admin'">
             <p
