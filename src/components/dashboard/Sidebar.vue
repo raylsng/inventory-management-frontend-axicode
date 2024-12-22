@@ -39,7 +39,7 @@
             <span class="">Dashboard</span>
           </a> -->
 
-          <div class="mt-4" v-if="currentRole === 'admin'">
+          <div class="" v-if="currentRole === 'admin'">
             <p
               class="px-3 text-uppercase small fw-semibold mb-2 text-secondary sidebar-text"
             >

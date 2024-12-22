@@ -19,7 +19,7 @@
         <tbody>
           <tr v-for="order in orders" :key="order.id">
             <td>{{ order.id }}</td>
-            <td>{{ order.userId }}</td>
+            <td>{{ order.user?.username }}</td>
             <td>{{ order.material?.name }}</td>
             <td>{{ order.orderQty }}</td>
             <td>

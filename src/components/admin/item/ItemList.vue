@@ -2,15 +2,17 @@
   <div class="container-fluid item-list">
     <div class="header d-flex justify-content-between align-items-center mb-4">
       <h2 class="h3">List Material</h2>
-      <!-- <button
+      <button
+        @click="orderSpk"
         type="button"
-        class="btn btn-outline-primary"
-        @click="showAddForm"
+        class="orderSpk btn btn-info"
+        title="Order Barang"
       >
-        <i class="bi bi-plus-circle me-2"></i>
-        Tambah Material
-      </button> -->
+        <i class="bi bi-cart-plus-fill"></i>
+        Order
+      </button>
     </div>
+    
     <div class="card shadow">
       <div class="card-body">
         <div class="table-responsive">
@@ -26,11 +28,13 @@
                 class="form-control form-control-sm"
                 placeholder="Search Material..."
               />
+              <!-- Button Search -->
               <!-- <button type="submit" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-search"></i>
               </button> -->
             </form>
           </div>
+
           <!-- table data items -->
           <table class="table table-hover border-top">
             <thead>
@@ -38,7 +42,6 @@
                 <th>Nama Material</th>
                 <th>Deskripsi</th>
                 <th>Stok</th>
-                <!-- <th>Action</th> -->
               </tr>
             </thead>
             <tbody>
@@ -46,37 +49,6 @@
                 <td>{{ item.name }}</td>
                 <td>{{ item.description }}</td>
                 <td>{{ item.stock }}</td>
-                <!-- <td>
-                  <div class="btn-group">
-                    <button
-                      @click="editItem(item)"
-                      type="button"
-                      class="btn btn-sm btn-info edit"
-                      title="Edit"
-                    >
-                      <i class="bi bi-pencil"></i>
-                    </button>
-
-                    <button
-                      @click="HandleDeleteItem(item)"
-                      type="button"
-                      class="delete btn btn-sm btn-danger"
-                      title="Delete"
-                    >
-                      <i class="bi bi-trash"></i>
-                    </button>
-
-                    <button
-                      @click="orderSpk(order)"
-                      type="button"
-                      class="orderSpk btn btn-sm btn-info"
-                      title="Order SPK"
-                    >
-                      Order
-                    </button>
-
-                  </div>
-                </td> -->
               </tr>
               <tr v-if="filteredItems.length === 0">
                 <td colspan="4" class="text-center text-muted">
@@ -105,7 +77,7 @@
       </div> -->
       <Modal :visible="showForm" @close="cancelEditForm">
         <ItemForm
-          :item="selectedItem"
+          :order="selectedOrder"
           :isEdit="isEdit"
           @submit="handleSubmit"
           @cancel="cancelEditForm"
@@ -121,9 +93,11 @@
 import Modal from "../../Modal.vue";
 import ItemForm from "./ItemForm.vue";
 import { useItemStore } from "@/store/itemStore";
+import { useOrderStore } from "@/store/orderStore";
 import { EventBus } from "@/utils/EventBus";
 import { computed, onMounted } from "vue";
 import Swal from "sweetalert2";
+import OrderForm from "./orderForm.vue";
 
 export default {
   //export komponen custom
@@ -132,10 +106,13 @@ export default {
     // ItemCard,
     Modal,
     ItemForm,
+    OrderForm,
   },
   setup() {
     const itemStore = useItemStore();
+    const orderStore = useOrderStore();
     const items = computed(() => itemStore.items);
+    const orders = computed(() => orderStore.orders);
 
     onMounted(() => {
       itemStore.fetchItems();
@@ -143,6 +120,9 @@ export default {
     return {
       items,
       itemStore,
+      orders,
+      orderStore,
+      addOrder: orderStore.addOrder,
       addItem: itemStore.addItem,
       updateItem: itemStore.updateItem,
       deleteItem: itemStore.deleteItem,
@@ -176,6 +156,13 @@ export default {
   },
 
   methods: {
+
+    orderSpk() {
+      this.selectedOrder = { materialId: null, createdAt: null, orderQty: 1 };
+      // this.isEdit = false;
+      this.showForm = true;
+    },
+
     showAddForm() {
       this.selectedItem = { id: 0, name: "", description: "", stock: 0 };
       this.isEdit = false;
@@ -217,6 +204,21 @@ export default {
       await this.itemStore.fetchItems();
       this.showForm = false;
     },
+    cancelEditForm() {
+      this.showForm = false;
+    },
+
+    async handleSubmit(order) {
+      // if (this.isEdit) {
+      //   await this.itemStore.updateItem(item);
+      //   this.notificationAlert("Data material berhasil diubah");
+      // } else {
+      await this.orderStore.addOrder(order);
+      this.notificationAlert("Order Berhasil");
+      this.showForm = false;
+    },
+    // await this.itemStore.fetchItems();
+    // },
     cancelEditForm() {
       this.showForm = false;
     },
