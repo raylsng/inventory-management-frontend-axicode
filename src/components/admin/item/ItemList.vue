@@ -12,7 +12,7 @@
         Order
       </button>
     </div>
-    
+
     <div class="card shadow">
       <div class="card-body">
         <div class="table-responsive">
@@ -36,9 +36,11 @@
           </div>
 
           <!-- table data items -->
-          <table class="table table-hover border-top">
+          <table
+            class="table table-bordered table-striped table-hover border-top"
+          >
             <thead>
-              <tr class="table-primary">
+              <tr>
                 <th>Nama Material</th>
                 <th>Deskripsi</th>
                 <th>Stok</th>
@@ -156,7 +158,6 @@ export default {
   },
 
   methods: {
-
     orderSpk() {
       this.selectedOrder = { materialId: null, createdAt: null, orderQty: 1 };
       // this.isEdit = false;
@@ -266,6 +267,10 @@ export default {
 <style scoped>
 .table > :not(caption) > * > * {
   vertical-align: middle;
+}
+th {
+  background-color: #2980b9;
+  color: white;
 }
 .form-control:focus {
   box-shadow: none;

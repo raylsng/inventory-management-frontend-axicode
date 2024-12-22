@@ -31,16 +31,19 @@
         />
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 <script>
 import Header from "./components/dashboard/Header.vue";
 import Sidebar from "./components/dashboard/Sidebar.vue";
+import Footer from "./components/dashboard/Footer.vue";
 import { EventBus } from "@/utils/EventBus";
 export default {
   components: {
     Header,
     Sidebar,
+    Footer,
   },
   data() {
     // mengganti url search param dengan router

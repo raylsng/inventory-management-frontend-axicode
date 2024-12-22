@@ -1,49 +1,57 @@
 <template>
-  <div class="transaction-list">
-    <h2>List Data SPK</h2>
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead class="table-primary">
-          <tr>
-            <th>ID SPK</th>
-            <th>User Name</th>
-            <th>Nama Barang</th>
-            <th>Jumlah Order</th>
-            <th>Status SPK</th>
-            <th>Order Dibuat</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
+  <div class="container-fluid transaction-list">
+    <h2 class="h3 text-center mb-4">List Data SPK</h2>
+    <div class="card shadow">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover border-top">
+            <thead>
+              <tr>
+                <th>ID SPK</th>
+                <th>User Name</th>
+                <th>Nama Barang</th>
+                <th>Jumlah Order</th>
+                <th>Status SPK</th>
+                <th>Order Dibuat</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
 
-        <tbody>
-          <tr v-for="order in orders" :key="order.id">
-            <td>{{ order.id }}</td>
-            <!-- <td>{{ order.userId }}</td> -->
-            <td>{{ order.user?.username }}</td>
-            <td>{{ order.material?.name }}</td>
-            <td>{{ order.orderQty }}</td>
-            <td>
-              <span class="badge" 
-                    :class="warnaStatus(order.status)">
+            <tbody>
+              <tr
+                v-for="order in orders.filter(
+                  (order) => order.status !== 'DONE'
+                )"
+                :key="order.id"
+              >
+                <td>{{ order.id }}</td>
+                <!-- <td>{{ order.userId }}</td> -->
+                <td>{{ order.user?.username }}</td>
+                <td>{{ order.material?.name }}</td>
+                <td>{{ order.orderQty }}</td>
+                <td>
+                  <span class="badge" :class="warnaStatus(order.status)">
                     {{ order.status }}
-              </span>
-            </td>
-            <td>{{ order.createdAt }}</td>
+                  </span>
+                </td>
+                <td>{{ order.createdAt }}</td>
 
-            <td class="action-buttons">
-              <button 
-                @click="buttonrReceiveOrder(order)" 
-                type="button"
-                class="orderSpk action-buttons btn btn-sm btn-info"
-                :disabled="order.status !== 'ON_PROCESS'" 
-                title="Received Order SPK">
-                Receive
-              </button>
-            </td>
-
-          </tr>
-        </tbody>
-      </table>
+                <td class="action-buttons">
+                  <button
+                    @click="buttonrReceiveOrder(order)"
+                    type="button"
+                    class="orderSpk action-buttons btn btn-sm btn-info"
+                    :disabled="order.status !== 'ON_PROCESS'"
+                    title="Received Order SPK"
+                  >
+                    Receive
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <Modal :visible="showForm" @close="cancelReturnForm">
@@ -53,7 +61,6 @@
         @cancel="cancelReturnForm"
       />
     </Modal>
-
   </div>
 </template>
 
@@ -115,26 +122,25 @@ export default {
     },
   },
 
-
   methods: {
-  // warna status sesuai PENDING, ON_PROCESS, DONE
-  warnaStatus(status) {
-    switch (status) {
-      case 'PENDING':
-        return 'bg-warning';
-      case 'ON_PROCESS':
-        return 'bg-primary';
-      case 'DONE':
-        return 'bg-success';
-      default:
-        return 'bg-warning';
-    }
-  },
+    // warna status sesuai PENDING, ON_PROCESS, DONE
+    warnaStatus(status) {
+      switch (status) {
+        case "PENDING":
+          return "bg-warning";
+        case "ON_PROCESS":
+          return "bg-primary";
+        case "DONE":
+          return "bg-success";
+        default:
+          return "bg-warning";
+      }
+    },
 
-  // PH ganti status Order Received
-  async buttonrReceiveOrder(order) {
+    // PH ganti status Order Received
+    async buttonrReceiveOrder(order) {
       // Validasi status sebelum melakukan aksi
-      if (order.status !== "ON_PROCESS" ) {
+      if (order.status !== "ON_PROCESS") {
         Swal.fire({
           icon: "error",
           title: "Tidak dapat Receive order",
@@ -175,8 +181,6 @@ export default {
       }
     },
 
-
-
     // openReturnForm(transaction) {
     //   this.selectedTransaction = { ...transaction };
     //   this.showForm = true;
@@ -202,12 +206,19 @@ export default {
 </script>
 
 <style scoped>
-.transaction-list {
+.table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+th {
+  background-color: #2980b9;
+  color: white;
+}
+/* .transaction-list {
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  /* margin: 20px 0; */
+  margin: 20px 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -250,7 +261,7 @@ button {
   cursor: pointer;
   border-radius: 4px;
   font-size: 14px;
-}
+} */
 
 /*
 .return-btn {
@@ -281,5 +292,4 @@ button:disabled {
   opacity: 0.5;
 }
 */
-
 </style>

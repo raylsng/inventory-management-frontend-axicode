@@ -1,70 +1,105 @@
 <template>
-  <div class="history-list">
-    <h2>Riwayat SPK Permintaan Material</h2>
-    <div class="table-responsive">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nama Barang</th>
-            <th>Jumlah Pinjam</th>
-            <th>Tanggal Pinjam</th>
-            <th>Tanggal Kembali</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="history in histories" :key="history.id">
-            <td>{{ history.id }}</td>
-            <td>{{ history.namaBarang }}</td>
-            <td>{{ history.jumlahPinjam }}</td>
-            <td>{{ history.tanggalPinjam }}</td>
-            <td>{{ history.tanggalKembali }}</td>
-            <td :class="['status', history.status.toLowerCase()]">
-              {{ history.status }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="container-fluid">
+    <h2 class="h3 text-center mb-4">Riwayat Order SPK Selesai</h2>
+    <div class="card shadow">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover table-striped border-top">
+            <thead>
+              <tr>
+                <!-- <th>ID</th> -->
+                <th>Nama Barang</th>
+                <th>Jumlah Order</th>
+                <th>Order Dibuat</th>
+                <!-- <th>Tanggal Kembali</th> -->
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in orders" :key="order.id">
+                <!-- <td>{{ order.id }}</td> -->
+                <td v-if="order.status === 'DONE'">
+                  {{ order.material?.name }}
+                </td>
+                <td v-if="order.status === 'DONE'">{{ order.orderQty }}</td>
+                <td v-if="order.status === 'DONE'">{{ order.createdAt }}</td>
+                <td v-if="order.status === 'DONE'">
+                  <span class="badge rounded-pill bg-dark">{{
+                    order.status
+                  }}</span>
+                </td>
+              </tr>
+              <tr v-if="orders.length === 0">
+                <td colspan="4" class="text-center text-muted">
+                  Tidak ada data order selesai
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { computed, onMounted } from "vue";
+import { useOrderStore } from "@/store/orderStore";
 export default {
   name: "HistoryList",
-  data() {
+  setup() {
+    const orderStore = useOrderStore();
+    const orders = computed(() => orderStore.orders);
+    onMounted(() => {
+      orderStore.fetchOrders();
+    });
     return {
-      histories: [
-        {
-          id: 1,
-          namaBarang: "Acer Nitro 15 AN515-58",
-          jumlahPinjam: 1,
-          tanggalPinjam: "2023-05-01",
-          tanggalKembali: "2023-05-10",
-          status: "selesai",
-        },
-        {
-          id: 2,
-          namaBarang: "Lenovo LOQ 15 15IRH8",
-          jumlahPinjam: 2,
-          tanggalPinjam: "2023-06-15",
-          tanggalKembali: "2023-06-20",
-          status: "diproses",
-        },
-      ],
+      orders,
+      orderStore,
     };
   },
+  // data() {
+  //   return {
+  //     histories: [
+  //       {
+  //         id: 1,
+  //         namaBarang: "Acer Nitro 15 AN515-58",
+  //         jumlahPinjam: 1,
+  //         tanggalPinjam: "2023-05-01",
+  //         tanggalKembali: "2023-05-10",
+  //         status: "selesai",
+  //       },
+  //       {
+  //         id: 2,
+  //         namaBarang: "Lenovo LOQ 15 15IRH8",
+  //         jumlahPinjam: 2,
+  //         tanggalPinjam: "2023-06-15",
+  //         tanggalKembali: "2023-06-20",
+  //         status: "diproses",
+  //       },
+  //     ],
+  //   };
+  // },
 };
 </script>
 
 <style scoped>
-.history-list {
+.table > :not(caption) > * > * {
+  vertical-align: middle;
+}
+th {
+  background-color: #2980b9;
+  color: white;
+}
+/* .btn-group {
+  gap: 0.25rem;
+} */
+/* .history-list {
   padding: 16px;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  /* margin: 8px 0; */
+  margin: 8px 0;
 }
 h2 {
   margin-bottom: 20px;
@@ -112,5 +147,5 @@ tr:hover {
 }
 .status.selesai {
   background-color: #5cb85c;
-}
+} */
 </style>

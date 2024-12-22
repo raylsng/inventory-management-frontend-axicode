@@ -32,9 +32,9 @@
             </form>
           </div>
           <!-- table data user -->
-          <table class="table table-hover border-top">
+          <table class="table table-striped table-hover border-top">
             <thead>
-              <tr class="table-primary">
+              <tr>
                 <th>User ID</th>
                 <th>Username</th>
                 <th>Email</th>
@@ -254,6 +254,10 @@ export default {
 <style scoped>
 .table > :not(caption) > * > * {
   vertical-align: middle;
+}
+th {
+  background-color: #2980b9;
+  color: white;
 }
 .form-control:focus {
   box-shadow: none;
