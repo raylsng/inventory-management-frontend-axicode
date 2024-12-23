@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "https://inventory-management-backend-axicode.vercel.app/api",
   headers: {
     "Content-Type": "application/json",
   },
